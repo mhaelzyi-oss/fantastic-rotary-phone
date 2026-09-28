@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles.css" />
+    <title>Video Pro Finder · Settings</title>
+  </head>
+  <body class="full-page">
+    <main class="page-frame">
+      <header class="page-header">
+        <a class="back-link" href="popup.html">← Finder</a><span class="eyebrow">Preferences</span>
+        <h1>Settings</h1>
+        <p>Keep your local workflow predictable and private.</p>
+      </header>
+      <section class="settings-grid">
+        <article class="settings-section">
+          <h2>Appearance</h2>
+          <label
+            >Theme<select id="theme">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+              <option value="system">System</option>
+            </select></label
+          ><label
+            >Glass intensity<select id="glass">
+              <option value="low">Low</option>
+              <option value="standard">Standard</option>
+              <option value="high">High</option>
+            </select></label
+          ><label
+            >Motion<select id="motion">
+              <option value="system">System</option>
+              <option value="reduce">Reduce</option>
+              <option value="full">Full</option>
+            </select></label
+          >
+        </article>
+        <article class="settings-section">
+          <h2>Download defaults</h2>
+          <label
+            >Quality mode<select id="quality">
+              <option value="best_balance">Best balance</option>
+              <option value="best_quality">Best quality</option>
+              <option value="fastest">Fastest estimated option</option>
+              <option value="smallest">Smallest file</option>
+            </select></label
+          ><label>Filename template<input id="filename" maxlength="220" /></label>
+          <label class="check-row"
+            ><input id="download-subtitles" type="checkbox" /><span
+              >Show save actions for available caption sidecars</span
+            ></label
+          >
+          <label class="check-row"
+            ><input id="remember-authority" type="checkbox" /><span
+              >Remember last authority basis only (confirmation is always required)</span
+            ></label
+          >
+          <p id="filename-preview" class="muted"></p>
+          <p id="filename-warning" class="muted" role="status"></p>
+          <label
+            >Default prompt<textarea id="default-prompt" rows="5" maxlength="2000"></textarea>
+          </label>
+          <p class="muted">
+            Prompt text is a preference only and cannot enable unsupported actions.
+          </p>
+          <button id="save-settings" class="button primary">Save preferences</button>
+          <button id="reset-defaults" class="button quiet">
+            Reset download and appearance defaults
+          </button>
+          <h3>Prompt presets</h3>
+          <label
+            >Preset name<input id="preset-name" maxlength="60" placeholder="My workflow"
+          /></label>
+          <button id="add-preset" class="button quiet">Save current prompt as preset</button>
+          <div id="preset-list" class="permission-list"></div>
+        </article>
+        <article class="settings-section">
+          <h2>Host access</h2>
+          <p>
+            Video Pro Finder scans only after you request a scan. Host access is temporary through
+            the browser's active-tab permission.
+          </p>
+          <label
+            >Request a specific origin<input
+              id="host-origin"
+              placeholder="https://example.com/*" /></label
+          ><button id="grant-host" class="button quiet">Grant origin access</button>
+          <p class="muted">
+            Host access is used to inspect media elements and accessible manifests. It does not
+            grant access to protected playback internals.
+          </p>
+          <div id="host-permissions" class="permission-list" aria-live="polite"></div>
+          <button id="grant-broad-host" class="button danger">Request broad host access</button>
+          <p class="muted">
+            Broad access applies to every HTTP and HTTPS site and is not needed for ordinary one-tab
+            scans.
+          </p>
+          <h3>Remembered quality by host</h3>
+          <div id="host-preferences" class="permission-list"></div>
+          <button id="clear-host-preferences" class="button quiet">Clear host preferences</button>
+        </article>
+        <article class="settings-section">
+          <h2>Privacy & local data</h2>
+          <p>
+            History, saved sources, diagnostics, and settings remain in this browser profile.
+            Telemetry is disabled.
+          </p>
+          <button id="clear-data" class="button danger">Clear local data</button>
+          <button id="export-settings" class="button quiet">Export settings</button>
+          <label class="field-label" for="import-settings">Import settings JSON</label>
+          <input id="import-settings" type="file" accept="application/json,.json" />
+        </article>
+        <article class="settings-section">
+          <h2>Diagnostics</h2>
+          <p>
+            Local operational messages only. Source URLs and query values are removed from exported
+            technical details.
+          </p>
+          <div id="diagnostic-list" class="permission-list" aria-live="polite"></div>
+          <button id="export-diagnostics" class="button quiet">Export sanitized report</button>
+          <button id="clear-diagnostics" class="button danger">Clear diagnostics</button>
+        </article>
+        <article class="settings-section">
+          <h2>Authority audit</h2>
+          <p>
+            Local download records include the authority basis selected for each completed job. They
+            are not proof or verification.
+          </p>
+          <div id="authority-audit" class="permission-list" aria-live="polite"></div>
+          <button id="export-audit" class="button quiet">Export authority records</button>
+          <button id="clear-audit" class="button danger">Clear authority bases</button>
+        </article>
+      </section>
+      <p id="settings-status" role="status" class="notice"></p>
+    </main>
+    <script type="module" src="/options.js"></script>
+  </body>
+</html>

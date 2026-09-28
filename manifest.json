@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Video Pro Finder",
+  "version": "1.0.0",
+  "description": "Find browser-exposed media and manage authorized, non-protected sources locally.",
+  "action": {
+    "default_title": "Video Pro Finder",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-default-16.png",
+      "32": "icons/icon-default-32.png"
+    }
+  },
+  "background": { "service_worker": "background.js", "type": "module" },
+  "permissions": [
+    "activeTab",
+    "storage",
+    "downloads",
+    "contextMenus",
+    "scripting",
+    "offscreen",
+    "clipboardWrite"
+  ],
+  "optional_permissions": ["notifications"],
+  "optional_host_permissions": ["http://*/*", "https://*/*"],
+  "options_page": "options.html",
+  "icons": {
+    "16": "icons/icon-default-16.png",
+    "32": "icons/icon-default-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}

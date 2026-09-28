@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "title": "Local demo fixture tab",
+    "url": "http://127.0.0.1:4173/demo/test.html",
+    "active": true
+  },
+  {
+    "id": 2,
+    "title": "Fictional unsupported-source fixture",
+    "url": "http://127.0.0.1:4173/demo/fixtures/torrent-like-index.html",
+    "active": false
+  }
+]

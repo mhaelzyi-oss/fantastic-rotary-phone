@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Video Pro Finder local demo</title>
+  </head>
+  <body>
+    <h1>Local demo fixtures</h1>
+    <p>Fixture-only page. The media placeholder is not a playable video.</p>
+    <video controls width="640" poster="fixtures/image-poster.svg">
+      <source src="fixtures/authorized-direct-video.mp4.placeholder" type="video/mp4" />
+      <track kind="captions" src="fixtures/captions-en.vtt" srclang="en" label="English" />
+    </video>
+    <a href="fixtures/authorized-direct-video.mp4.placeholder" type="video/mp4"
+      >Authorized direct video placeholder</a
+    >
+    <a href="fixtures/master.m3u8">Non-encrypted HLS master playlist</a>
+    <a href="fixtures/sample.mpd">Non-protected DASH manifest</a>
+    <a href="fixtures/protected-sample.mpd">Protected DASH example</a>
+    <a href="fixtures/captions-es.vtt">Spanish subtitle sidecar</a>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        "name": "Local fixture trailer",
+        "contentUrl": "fixtures/authorized-direct-video.mp4.placeholder"
+      }
+    </script>
+  </body>
+</html>

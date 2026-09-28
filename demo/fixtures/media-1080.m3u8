@@ -1,0 +1,5 @@
+#EXTM3U
+#EXT-X-TARGETDURATION:6
+#EXTINF:5.0,
+fixture-segment-1080.m4s
+#EXT-X-ENDLIST

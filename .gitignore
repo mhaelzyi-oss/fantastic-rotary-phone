@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+*.zip
+release/*.crx
+release/*.pem
+.DS_Store

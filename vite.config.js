@@ -29,7 +29,12 @@ export default defineConfig({
       name: 'extension-files',
       async closeBundle() {
         await mkdir(resolve(root, 'dist/icons'), { recursive: true });
+        await mkdir(resolve(root, 'dist/branding'), { recursive: true });
         await copyFile(resolve(root, 'manifest.json'), resolve(root, 'dist/manifest.json'));
+        await copyFile(
+          resolve(root, 'branding/krypton-ultimate-inc-ii.svg'),
+          resolve(root, 'dist/branding/krypton-ultimate-inc-ii.svg'),
+        );
         for (const state of ['default', 'detected', 'protected', 'active', 'complete']) {
           const source = resolve(root, `icons/icon-${state}.svg`);
           await copyFile(source, resolve(root, `dist/icons/icon-${state}.svg`));

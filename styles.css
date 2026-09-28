@@ -290,10 +290,19 @@ a {
 }
 .footer-links {
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
   margin-top: 16px;
   font-size: 11px;
   color: var(--dim);
+}
+.publisher-logo {
+  width: 144px;
+  height: 29px;
+  object-fit: contain;
+  object-position: left center;
 }
 .footer-links a {
   text-decoration: none;

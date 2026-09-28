@@ -1,6 +1,10 @@
 # Video Pro Finder
 
+![Krypton Ultimate Inc II](branding/krypton-ultimate-inc-ii.svg)
+
 Video Pro Finder is an original Manifest V3 extension for finding media URLs already exposed by a page, classifying them locally, and starting browser-native downloads only for eligible direct sources after an authority declaration.
+
+Publisher: Krypton Ultimate Inc II.
 
 ## Product boundaries
 

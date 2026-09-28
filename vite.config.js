@@ -9,7 +9,7 @@ const pages = ['popup', 'options', 'library', 'resources', 'offscreen'];
 export default defineConfig({
   publicDir: false,
   build: {
-    outDir: 'dist',
+    outDir: 'chrome-extension',
     emptyOutDir: true,
     rollupOptions: {
       input: Object.fromEntries([
@@ -28,27 +28,30 @@ export default defineConfig({
     {
       name: 'extension-files',
       async closeBundle() {
-        await mkdir(resolve(root, 'dist/icons'), { recursive: true });
-        await mkdir(resolve(root, 'dist/branding'), { recursive: true });
-        await copyFile(resolve(root, 'manifest.json'), resolve(root, 'dist/manifest.json'));
+        await mkdir(resolve(root, 'chrome-extension/icons'), { recursive: true });
+        await mkdir(resolve(root, 'chrome-extension/branding'), { recursive: true });
+        await copyFile(
+          resolve(root, 'manifest.json'),
+          resolve(root, 'chrome-extension/manifest.json'),
+        );
         await copyFile(
           resolve(root, 'branding/krypton-ultimate-inc-ii.svg'),
-          resolve(root, 'dist/branding/krypton-ultimate-inc-ii.svg'),
+          resolve(root, 'chrome-extension/branding/krypton-ultimate-inc-ii.svg'),
         );
         for (const state of ['default', 'detected', 'protected', 'active', 'complete']) {
           const source = resolve(root, `icons/icon-${state}.svg`);
-          await copyFile(source, resolve(root, `dist/icons/icon-${state}.svg`));
+          await copyFile(source, resolve(root, `chrome-extension/icons/icon-${state}.svg`));
           for (const size of [16, 32])
             await sharp(source)
               .resize(size, size)
               .png()
-              .toFile(resolve(root, `dist/icons/icon-${state}-${size}.png`));
+              .toFile(resolve(root, `chrome-extension/icons/icon-${state}-${size}.png`));
         }
         for (const size of [48, 128])
           await sharp(resolve(root, 'icons/icon-default.svg'))
             .resize(size, size)
             .png()
-            .toFile(resolve(root, `dist/icons/icon-${size}.png`));
+            .toFile(resolve(root, `chrome-extension/icons/icon-${size}.png`));
       },
     },
   ],

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Video Pro Finder</title>
+    <script type="module" crossorigin src="/popup.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill.js">
+    <link rel="modulepreload" crossorigin href="/assets/preferences.js">
+    <link rel="modulepreload" crossorigin href="/assets/filenameTemplate.js">
+    <link rel="modulepreload" crossorigin href="/assets/protectionDetector.js">
+    <link rel="modulepreload" crossorigin href="/assets/constants.js">
+    <link rel="modulepreload" crossorigin href="/assets/sourceNormalizer.js">
+    <link rel="stylesheet" crossorigin href="/assets/preferences.css">
+  </head>
+  <body>
+    <main class="popup-shell">
+      <header class="topbar">
+        <div class="brand-mark" aria-hidden="true">VP</div>
+        <div class="brand-copy">
+          <strong>Video Pro Finder</strong><span id="origin">Current page</span>
+        </div>
+        <button id="scan" class="icon-button" title="Scan this page" aria-label="Scan this page">
+          ↻</button
+        ><button
+          id="open-library"
+          class="icon-button"
+          title="Open library"
+          aria-label="Open library"
+        >
+          ▤</button
+        ><button
+          id="open-settings"
+          class="icon-button"
+          title="Open settings"
+          aria-label="Open settings"
+        >
+          ⚙
+        </button>
+      </header>
+      <section class="summary-strip" aria-label="Scan summary">
+        <div><strong id="eligible-count">0</strong><span>eligible</span></div>
+        <div><strong id="protected-count">0</strong><span>protected</span></div>
+        <div><strong id="queue-count">0</strong><span>in queue</span></div>
+        <span id="scan-time" class="summary-time">Not scanned</span>
+      </section>
+      <div id="notice" class="notice" role="status">
+        Scan the current page to find browser-exposed media.
+      </div>
+      <section id="sources" class="source-list" aria-label="Detected sources"></section>
+      <section class="queue-section">
+        <div class="section-heading">
+          <h2>Recent queue</h2>
+          <span id="queue-total">0 items</span>
+        </div>
+        <div id="queue" class="queue-list"></div>
+      </section>
+      <footer class="footer-links">
+        <a href="resources.html" target="_blank">Resources & privacy</a
+        ><span>Local-first · no telemetry</span>
+        <img
+          class="publisher-logo"
+          src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0ODAgOTYiIHJvbGU9ImltZyIgYXJpYS1sYWJlbGxlZGJ5PSJ0aXRsZSBkZXNjcmlwdGlvbiI+CiAgPHRpdGxlIGlkPSJ0aXRsZSI+S3J5cHRvbiBVbHRpbWF0ZSBJbmMgSUk8L3RpdGxlPgogIDxkZXNjIGlkPSJkZXNjcmlwdGlvbiI+S3J5cHRvbiBVbHRpbWF0ZSBJbmMgSUkgcHVibGlzaGVyIGxvZ28gd2l0aCBhIGZhY2V0ZWQgZ29sZCBLIG1vbm9ncmFtLjwvZGVzYz4KICA8ZyBmaWxsPSJub25lIiBzdHJva2U9IiNkNGFmMzciIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+CiAgICA8cGF0aCBkPSJNNDggNyA4MyAyN3Y0Mkw0OCA4OSAxMyA2OVYyN3oiLz4KICAgIDxwYXRoIGQ9Im0zNSAyNyAwIDQybTAtMjEgMjctMjFNMzUgNDhsMjkgMjEiIHN0cm9rZT0iI2ZmZDk2NiIgc3Ryb2tlLXdpZHRoPSI2Ii8+CiAgPC9nPgogIDxwYXRoIGQ9Ik0xMDIgMjloNHYzOGgtNHoiIGZpbGw9IiNkNGFmMzciLz4KICA8dGV4dCB4PSIxMjMiIHk9IjQ3IiBmaWxsPSIjZjRmN2ZiIiBmb250LWZhbWlseT0iQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIyNSIgZm9udC13ZWlnaHQ9IjcwMCI+S1JZUFRPTiBVTFRJTUFURTwvdGV4dD4KICA8dGV4dCB4PSIxMjQiIHk9IjcyIiBmaWxsPSIjZDRhZjM3IiBmb250LWZhbWlseT0iQXJpYWwsIEhlbHZldGljYSwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNSIgZm9udC13ZWlnaHQ9IjcwMCIgbGV0dGVyLXNwYWNpbmc9IjIiPklOQyBJSTwvdGV4dD4KPC9zdmc+Cg=="
+          alt="Krypton Ultimate Inc II"
+          width="144"
+          height="29"
+        />
+      </footer>
+    </main>
+    <dialog id="authority-dialog" class="authority-dialog">
+      <form method="dialog" id="authority-form">
+        <div class="dialog-heading">
+          <div class="eyebrow">Before you save</div>
+          <h2>Confirm your authority</h2>
+        </div>
+        <div id="authority-source" class="authority-source"></div>
+        <div id="authority-filename" class="authority-source"></div>
+        <label class="field-label" for="authority-basis">Authority basis</label
+        ><select id="authority-basis" required>
+          <option value="">Choose one</option>
+          <option value="owner">I created or own this media</option>
+          <option value="permission">I have explicit permission</option>
+          <option value="official_download">The provider offers this file for download</option>
+          <option value="public_domain">The media is public domain</option>
+          <option value="compatible_license">The licence permits my intended use</option>
+          <option value="organizational_authority">
+            Documented organizational authority
+          </option></select
+        ><label class="field-label" for="case-reference">Case or reference (optional)</label
+        ><input id="case-reference" maxlength="120" />
+        <label class="field-label" for="organization-name">Organization (optional)</label>
+        <input id="organization-name" maxlength="120" />
+        <label class="field-label" for="authorization-note">Authorization note (optional)</label>
+        <textarea id="authorization-note" maxlength="500" rows="2"></textarea>
+        <label class="check-row"
+          ><input id="authority-confirm" type="checkbox" /><span
+            >I confirm that I have authority to save this media and will comply with applicable law,
+            licences, and platform terms.</span
+          ></label
+        >
+        <p class="disclaimer">
+          This is a user declaration. Video Pro Finder does not verify ownership, permission,
+          licence scope, or legal authority.
+        </p>
+        <div class="dialog-actions">
+          <button type="button" id="cancel-download" class="button quiet">Cancel</button
+          ><button type="submit" id="start-download" class="button primary" disabled>
+            Start download
+          </button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>

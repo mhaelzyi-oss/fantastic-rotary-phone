@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Video Pro Finder · Library</title>
+    <script type="module" crossorigin src="/library.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill.js">
+    <link rel="modulepreload" crossorigin href="/assets/preferences.js">
+    <link rel="stylesheet" crossorigin href="/assets/preferences.css">
+  </head>
+  <body class="full-page">
+    <main class="page-frame">
+      <header class="page-header">
+        <a class="back-link" href="popup.html">← Finder</a
+        ><span class="eyebrow">On this device</span>
+        <h1>Saved sources</h1>
+        <p>Your local watch-later list and download history.</p>
+      </header>
+      <div class="library-tools">
+        <input
+          id="search"
+          type="search"
+          placeholder="Search title or host"
+          aria-label="Search saved sources"
+        /><select id="filter" aria-label="Filter sources">
+          <option value="all">All sources</option>
+          <option value="eligible">Eligible</option>
+          <option value="protected">Protected</option>
+          <option value="blocked">Blocked</option></select
+        ><select id="sort" aria-label="Sort saved sources">
+          <option value="newest">Newest saved</option>
+          <option value="oldest">Oldest saved</option>
+          <option value="title">Title A–Z</option>
+          <option value="last-opened">Last opened</option>
+          <option value="host">Host</option></select
+        ><button id="remove-selected" class="button danger">Remove selected</button>
+        <button id="export" class="button quiet">Export metadata</button>
+      </div>
+      <section id="library-list" class="library-list"></section>
+      <h2 class="history-title">Download history</h2>
+      <section id="history-list" class="history-list"></section>
+    </main>
+  </body>
+</html>

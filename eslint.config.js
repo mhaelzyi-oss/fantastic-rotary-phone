@@ -1,6 +1,12 @@
 export default [
   {
-    ignores: ['dist/**', 'node_modules/**', 'coverage/**', 'playwright-report/**'],
+    ignores: [
+      'dist/**',
+      'chrome-extension/**',
+      'node_modules/**',
+      'coverage/**',
+      'playwright-report/**',
+    ],
   },
   {
     files: ['**/*.js'],

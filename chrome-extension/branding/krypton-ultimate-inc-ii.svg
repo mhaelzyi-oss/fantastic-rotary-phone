@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 96" role="img" aria-labelledby="title description">
+  <title id="title">Krypton Ultimate Inc II</title>
+  <desc id="description">Krypton Ultimate Inc II publisher logo with a faceted gold K monogram.</desc>
+  <g fill="none" stroke="#d4af37" stroke-width="3" stroke-linejoin="round">
+    <path d="M48 7 83 27v42L48 89 13 69V27z"/>
+    <path d="m35 27 0 42m0-21 27-21M35 48l29 21" stroke="#ffd966" stroke-width="6"/>
+  </g>
+  <path d="M102 29h4v38h-4z" fill="#d4af37"/>
+  <text x="123" y="47" fill="#f4f7fb" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700">KRYPTON ULTIMATE</text>
+  <text x="124" y="72" fill="#d4af37" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" letter-spacing="2">INC II</text>
+</svg>

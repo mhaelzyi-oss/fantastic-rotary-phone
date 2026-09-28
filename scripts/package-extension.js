@@ -6,11 +6,11 @@ import { build } from 'esbuild';
 
 const execFileAsync = promisify(execFile);
 const root = process.cwd();
-const dist = resolve(root, 'dist');
+const extensionDir = resolve(root, 'chrome-extension');
 
 await build({
   entryPoints: [resolve(root, 'content.js')],
-  outfile: resolve(dist, 'content.js'),
+  outfile: resolve(extensionDir, 'content.js'),
   bundle: true,
   format: 'iife',
   platform: 'browser',
@@ -29,7 +29,7 @@ if (!process.argv.includes('--build-only')) {
     crx,
     '--zip',
     archive,
-    dist,
+    extensionDir,
   ]);
   await chmod(key, 0o600);
   console.log(`Packed Chrome extension: ${crx}`);

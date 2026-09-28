@@ -1,0 +1,1 @@
+import"./assets/modulepreload-polyfill.js";chrome.runtime.onMessage.addListener((r,o,t)=>(r==null?void 0:r.target)!=="offscreen"||r.type!=="COPY_TEXT"?!1:(navigator.clipboard.writeText(r.text).then(()=>t({ok:!0})).catch(e=>t({ok:!1,error:e.message})),!0));

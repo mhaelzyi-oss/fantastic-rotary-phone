@@ -25,6 +25,7 @@ Protected or encrypted media is blocked. Video Pro Finder never retrieves encryp
 - Authority-gated caption saving for listed, accessible VTT/SRT sidecars when enabled in settings.
 - Context actions for scanning, inspecting/preparing links, saving references, and copying URLs.
 - Atomic library/host-preference updates and startup recovery for interrupted queue entries.
+- Full-page dashboard opened from the toolbar, with native direct-media preview, expanded media metadata, a live download radar, and opt-in automatic detection for granted sites.
 - Popup, settings, local library, resources/privacy pages, fictional demo fixtures, tests, and ZIP packaging.
 
 ## Source support and limitations
@@ -40,7 +41,8 @@ CORS and host permissions limit which manifests can be read. Authenticated sourc
 - `utils/sourceNormalizer.js`, `sourceEligibility.js`, and `protectionDetector.js`: shared source classification and hard policy gates.
 - `utils/playlistParser.js`: parsers for accessible manifests. The popup's explicit Analyze action fetches a bounded manifest without credentials, subject to page-origin CORS, then stores variants and public protection signals locally.
 - `utils/storage.js` and `schema.js`: versioned `chrome.storage.local` state and basic migration/recovery.
-- `popup.html` / `popup.js`: scan, review, analyze, save, copy, preview, authority-gated direct download, quality advice, and a progress/cancel queue.
+- `dashboard.html` / `dashboard.js`: full-page scan, review, analyze, save, copy, native preview, authority-gated download, quality advice, and download radar. The toolbar opens this page with the originating tab ID.
+- `popup.html` / `popup.js`: compact legacy popup UI, retained for compatibility and isolated UI tests; the toolbar action opens the dashboard instead.
 - `options.html`, `library.html`, and `resources.html`: local preferences and permissions, saved references with notes/tags/sorting, history, and policy guidance.
 
 The content scanner does not instrument EME, inspect private application state, read cookies/forms, or inspect browser memory. `demo/edge_tabs_fixture.json` is inert sample JSON; it is not executed, navigated to, or fetched.
@@ -64,7 +66,7 @@ No remote executable code or analytics are used. Interface fonts use local syste
 2. Open `chrome://extensions` or `edge://extensions`.
 3. Enable Developer mode and choose **Load unpacked**.
 4. Select the repository's `chrome-extension/` directory.
-5. Open a normal HTTP(S) page and select the extension's Scan button.
+5. Open a normal HTTP(S) page and select the extension icon to open the full-page dashboard. Use Scan page for a one-time scan, or explicitly grant all-sites permission in the dashboard to enable automatic HTTP(S) page scans.
 
 Browser-internal pages, extension stores, and some PDF/viewer pages do not permit content-script injection. Granting an optional host permission does not override those browser restrictions.
 

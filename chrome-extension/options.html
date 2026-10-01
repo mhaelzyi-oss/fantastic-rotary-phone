@@ -83,8 +83,8 @@
         <article class="settings-section">
           <h2>Host access</h2>
           <p>
-            Video Pro Finder scans only after you request a scan. Host access is temporary through
-            the browser's active-tab permission.
+            One-tab scans need no permanent access. Grant a specific origin for that site, or opt in
+            to automatic scanning on all HTTP(S) sites below.
           </p>
           <label
             >Request a specific origin<input
@@ -96,10 +96,12 @@
             grant access to protected playback internals.
           </p>
           <div id="host-permissions" class="permission-list" aria-live="polite"></div>
-          <button id="grant-broad-host" class="button danger">Request broad host access</button>
+          <button id="grant-broad-host" class="button danger">
+            Enable automatic detection on all sites
+          </button>
           <p class="muted">
-            Broad access applies to every HTTP and HTTPS site and is not needed for ordinary one-tab
-            scans.
+            This asks Chrome for access to every HTTP and HTTPS site. Detection runs after pages
+            load; protected media remains blocked. Revoke this access below to stop automatic scans.
           </p>
           <h3>Remembered quality by host</h3>
           <div id="host-preferences" class="permission-list"></div>

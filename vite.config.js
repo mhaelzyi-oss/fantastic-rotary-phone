@@ -4,7 +4,7 @@ import sharp from 'sharp';
 import { defineConfig } from 'vite';
 
 const root = process.cwd();
-const pages = ['popup', 'options', 'library', 'resources', 'offscreen'];
+const pages = ['popup', 'dashboard', 'options', 'library', 'resources', 'offscreen'];
 
 export default defineConfig({
   publicDir: false,

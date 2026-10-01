@@ -307,9 +307,14 @@ $('#grant-broad-host').addEventListener('click', async () => {
   )
     return;
   const granted = await chrome.permissions.request({ origins: ['http://*/*', 'https://*/*'] });
-  $('#settings-status').textContent = granted
-    ? 'Broad host access granted.'
-    : 'Permission was not granted.';
+  if (granted) {
+    const scan = await chrome.runtime.sendMessage({ type: 'AUTO_SCAN_ACTIVE_TAB' });
+    $('#settings-status').textContent = scan.ok
+      ? 'Automatic detection enabled for HTTP(S) sites. The active page is being scanned.'
+      : `Automatic detection enabled. ${scan.error}`;
+  } else {
+    $('#settings-status').textContent = 'Permission was not granted.';
+  }
   const response = await chrome.runtime.sendMessage({ type: 'GET_STATE' });
   await renderPermissions(response.state.hostPreferences);
 });

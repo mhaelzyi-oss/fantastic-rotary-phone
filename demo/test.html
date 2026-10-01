@@ -8,7 +8,12 @@
     <h1>Local demo fixtures</h1>
     <p>Fixture-only page. The media placeholder is not a playable video.</p>
     <video controls width="640" poster="fixtures/image-poster.svg">
-      <source src="fixtures/authorized-direct-video.mp4.placeholder" type="video/mp4" />
+      <source
+        src="fixtures/authorized-direct-video.mp4.placeholder"
+        type='video/mp4; codecs="avc1.640028"'
+        data-bitrate="1800000"
+        data-estimated-size="1048576"
+      />
       <track kind="captions" src="fixtures/captions-en.vtt" srclang="en" label="English" />
     </video>
     <a href="fixtures/authorized-direct-video.mp4.placeholder" type="video/mp4"

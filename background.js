@@ -11,6 +11,7 @@ import { createAttestation } from './utils/authorization.js';
 import { validateSettingsUpdate } from './utils/settingsValidation.js';
 import { recordCompletedDownload } from './utils/downloadHistory.js';
 import { createTrustedSubtitleSource } from './utils/subtitleSource.js';
+import { getToolbarDetectionState, isScannablePage } from './utils/detectionState.js';
 
 const SOURCES_KEY = 'tabSources';
 const menus = [
@@ -30,6 +31,23 @@ chrome.runtime.onStartup.addListener(() => {
 });
 chrome.downloads.onChanged.addListener((delta) => {
   void onDownloadChanged(delta);
+});
+chrome.action.onClicked.addListener((tab) => {
+  if (!tab?.id) return;
+  void chrome.tabs.create({
+    url: `${chrome.runtime.getURL('dashboard.html')}?tabId=${tab.id}`,
+    windowId: tab.windowId,
+    active: true,
+  });
+});
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === 'loading' || changeInfo.url)
+    void clearTabSources(tabId).catch(() => {});
+  if (changeInfo.status === 'complete' && isScannablePage(tab?.url))
+    void autoScanIfGranted(tabId).catch(() => {});
+});
+chrome.tabs.onRemoved.addListener((tabId) => {
+  void clearTabSources(tabId).catch(() => {});
 });
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.target === 'offscreen') return false;
@@ -105,31 +123,38 @@ async function handleMessage(message, sender) {
       scannedAt: Date.now(),
     };
     await setValue(SOURCES_KEY, saved);
-    const iconState = saved[tabId].sources.some((item) => item.protection.isProtected)
-      ? 'protected'
-      : 'detected';
-    await chrome.action.setIcon({
-      tabId,
-      path: { 16: `icons/icon-${iconState}-16.png`, 32: `icons/icon-${iconState}-32.png` },
-    });
+    await updateTabAction(tabId, saved[tabId].sources);
     return { ok: true, count: saved[tabId].sources.length };
   }
   if (message?.type === 'GET_TAB_SOURCES') {
     const saved = await getValue(SOURCES_KEY, {});
+    const tab = await chrome.tabs.get(message.tabId).catch(() => null);
+    const page = saved[message.tabId];
+    if (!tab || !page || tab.url !== page.pageUrl)
+      return { ok: true, sources: [], pageTitle: '', pageUrl: tab?.url || '', scannedAt: null };
     return {
       ok: true,
-      ...(saved[message.tabId] || { sources: [], pageTitle: '', pageUrl: '', scannedAt: null }),
+      ...page,
     };
   }
   if (message?.type === 'SCAN_TAB') {
     const tab = await chrome.tabs.get(message.tabId);
-    if (!/^https?:/.test(tab.url || ''))
+    if (!isScannablePage(tab.url))
       return { ok: false, error: 'This page does not allow extension scanning.' };
-    await chrome.scripting.executeScript({
-      target: { tabId: message.tabId },
-      files: ['content.js'],
-    });
-    await chrome.tabs.sendMessage(message.tabId, { type: 'SCAN_NOW' }).catch(() => {});
+    await scanTab(message.tabId);
+    return { ok: true };
+  }
+  if (message?.type === 'AUTO_SCAN_ACTIVE_TAB') {
+    const tab = Number.isInteger(message.tabId)
+      ? await chrome.tabs.get(message.tabId).catch(() => null)
+      : (await chrome.tabs.query({ active: true, lastFocusedWindow: true }))[0];
+    if (!tab?.id || !isScannablePage(tab.url))
+      throw new Error('The active tab does not allow extension scanning.');
+    if (!(await hasHostAccessForUrl(tab.url)))
+      throw new Error(
+        'Grant all-site access or permission for this site before automatic scanning.',
+      );
+    await scanTab(tab.id);
     return { ok: true };
   }
   if (message?.type === 'START_DOWNLOAD') {
@@ -423,6 +448,63 @@ async function getTrustedPageSource(tabId, requestedSource) {
   const source = findTrustedSource(page, requestedSource);
   if (!source) throw new Error('This source is not part of the current page scan.');
   return source;
+}
+
+async function updateTabAction(tabId, sources) {
+  const state = getToolbarDetectionState(sources);
+  await chrome.action.setIcon({
+    tabId,
+    path: {
+      16: `icons/icon-${state.icon}-16.png`,
+      32: `icons/icon-${state.icon}-32.png`,
+    },
+  });
+  await chrome.action.setBadgeText({ tabId, text: state.badge });
+  if (state.badge === '!') await chrome.action.setBadgeBackgroundColor({ tabId, color: '#b78420' });
+  else if (state.count) await chrome.action.setBadgeBackgroundColor({ tabId, color: '#b78420' });
+  await chrome.action.setTitle({
+    tabId,
+    title: state.count
+      ? `Video Pro Finder: ${state.count} media source${state.count === 1 ? '' : 's'} detected`
+      : 'Video Pro Finder',
+  });
+}
+
+async function clearTabSources(tabId) {
+  const saved = await getValue(SOURCES_KEY, {});
+  if (saved[tabId]) {
+    delete saved[tabId];
+    await setValue(SOURCES_KEY, saved);
+  }
+  await updateTabAction(tabId, []);
+}
+
+async function hasBroadHostAccess() {
+  return chrome.permissions.contains({ origins: ['http://*/*', 'https://*/*'] });
+}
+
+async function autoScanIfGranted(tabId) {
+  const tab = await chrome.tabs.get(tabId).catch(() => null);
+  if (tab && (await hasHostAccessForUrl(tab.url))) await scanTab(tabId);
+}
+
+async function hasHostAccessForUrl(url) {
+  if (await hasBroadHostAccess()) return true;
+  try {
+    const parsed = new URL(url);
+    if (!isScannablePage(parsed.href)) return false;
+    return chrome.permissions.contains({ origins: [`${parsed.origin}/*`] });
+  } catch {
+    return false;
+  }
+}
+
+async function scanTab(tabId) {
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    files: ['content.js'],
+  });
+  await chrome.tabs.sendMessage(tabId, { type: 'SCAN_NOW' }).catch(() => {});
 }
 
 async function onDownloadChanged(delta) {

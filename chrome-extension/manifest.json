@@ -5,7 +5,6 @@
   "description": "Find browser-exposed media and manage authorized, non-protected sources locally.",
   "action": {
     "default_title": "Video Pro Finder",
-    "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon-default-16.png",
       "32": "icons/icon-default-32.png"

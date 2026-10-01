@@ -100,6 +100,7 @@ function sourceCard(source, state) {
   );
   row.append(visual, details, status);
   card.append(row);
+  card.append(sourceMetadata(source));
   if (source.protection.isProtected)
     card.append(
       el('p', 'card-warning', 'Protected or encrypted media detected. Download is unavailable.'),
@@ -194,7 +195,7 @@ function sourceCard(source, state) {
       const line = el(
         'li',
         '',
-        `${variant.height ? `${variant.height}p` : variant.mimeType || 'Variant'} · ${variant.bandwidth ? `${Math.round(variant.bandwidth / 1000)} kbps` : 'bitrate unknown'}${variant.codecs ? ` · ${variant.codecs}` : ''}`,
+        `${variant.width && variant.height ? `${variant.width}×${variant.height}` : variant.height ? `${variant.height}p` : variant.mimeType || 'Variant'} · ${variant.bandwidth ? `${Math.round(variant.bandwidth / 1000)} kbps` : 'bitrate unknown'}${variant.codecs ? ` · ${variant.codecs}` : ''}${variant.estimatedSize ? ` · ${formatBytes(variant.estimatedSize)}` : ''}`,
       );
       variantList.append(line);
     }
@@ -240,6 +241,43 @@ function sourceCard(source, state) {
   }
   card.append(actions);
   return card;
+}
+
+function sourceMetadata(source) {
+  const details = el('details', 'source-details');
+  details.append(el('summary', '', 'Media data'));
+  const list = document.createElement('dl');
+  list.className = 'media-data';
+  const duration = Number.isFinite(source.durationSeconds)
+    ? `${Math.floor(source.durationSeconds / 60)}:${String(Math.floor(source.durationSeconds % 60)).padStart(2, '0')}`
+    : 'Not reported';
+  const bitrate = source.bitrate ? `${Math.round(source.bitrate / 1000)} kbps` : 'Not reported';
+  const resolution =
+    source.width && source.height
+      ? `${source.width} × ${source.height}`
+      : source.resolution || 'Not reported';
+  const rows = [
+    ['Format', source.mime || source.streamType.toUpperCase()],
+    ['Resolution', resolution],
+    ['Bitrate', bitrate],
+    ['Codec', source.codecs || 'Not reported'],
+    ['Frame rate', source.fps ? `${source.fps} fps` : 'Not reported'],
+    ['Duration', duration],
+    ['Estimated size', formatBytes(source.estimatedSize)],
+    ['Captions', String(source.subtitles?.length || 0)],
+    ['Variants', String(source.variants?.length || 0)],
+    [
+      'Protection',
+      source.protection?.isProtected ? source.protection.category : 'No public signal observed',
+    ],
+  ];
+  for (const [label, value] of rows) {
+    const term = el('dt', '', label);
+    const description = el('dd', '', value);
+    list.append(term, description);
+  }
+  details.append(list);
+  return details;
 }
 
 function qualityPanel(source, state) {

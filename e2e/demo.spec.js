@@ -11,12 +11,25 @@ test('local fixture exposes direct, HLS, protected-DASH, captions, and unsupport
       type: source.streamType,
       label: source.label,
       subtitleCount: source.subtitles.length,
+      mime: source.mime,
+      codecs: source.codecs,
+      bitrate: source.bitrate,
+      estimatedSize: source.estimatedSize,
     }));
   });
   expect(results.some((source) => source.type === 'direct')).toBeTruthy();
   expect(results.some((source) => source.type === 'subtitle')).toBeTruthy();
   expect(
     results.some((source) => source.type === 'direct' && source.subtitleCount > 0),
+  ).toBeTruthy();
+  expect(
+    results.some(
+      (source) =>
+        source.mime === 'video/mp4' &&
+        source.codecs === 'avc1.640028' &&
+        source.bitrate === 1800000 &&
+        source.estimatedSize === 1048576,
+    ),
   ).toBeTruthy();
   expect(results.some((source) => source.type === 'hls')).toBeTruthy();
   const manifestResults = await page.evaluate(async () => {
@@ -68,7 +81,20 @@ test('local fixture exposes direct, HLS, protected-DASH, captions, and unsupport
         defaultDownloadSubtitles: true,
         maxHistoryItems: 100,
       },
-      queue: [],
+      queue: [
+        {
+          id: 'active-download',
+          status: 'downloading',
+          source: { label: 'Radar fixture' },
+          progress: {
+            percent: 42,
+            bytesReceived: 42,
+            totalBytes: 100,
+            bytesPerSecond: 1,
+            etaSeconds: 58,
+          },
+        },
+      ],
       history: [
         {
           id: 'history-1',
@@ -128,7 +154,7 @@ test('local fixture exposes direct, HLS, protected-DASH, captions, and unsupport
       streamType: 'direct',
       resolution: '720p',
       protection: { isProtected: false, category: 'none', signals: [] },
-      eligibility: { canDownloadDirectly: true, blockCode: 'NONE' },
+      eligibility: { canDownloadDirectly: true, canPreview: true, blockCode: 'NONE' },
       subtitles: [{ language: 'en', label: 'English', url: 'https://media.example/captions.vtt' }],
       variants: [],
     };
@@ -212,6 +238,7 @@ test('local fixture exposes direct, HLS, protected-DASH, captions, and unsupport
       },
       tabs: {
         query: async () => [{ id: 5, url: 'http://127.0.0.1:4173/demo/test.html' }],
+        get: async (id) => ({ id, url: 'http://127.0.0.1:4173/demo/test.html' }),
         create: async () => {},
       },
       permissions: {
@@ -298,4 +325,29 @@ test('local fixture exposes direct, HLS, protected-DASH, captions, and unsupport
       ),
     ),
   ).toBeTruthy();
+  await page.goto('/dashboard.html?tabId=5');
+  await expect(page.getByRole('heading', { name: 'Detected media' })).toBeVisible();
+  await expect(page.getByText('Quality fixture')).toBeVisible();
+  await page.locator('.media-details summary').first().click();
+  await expect(page.locator('.media-data dt').filter({ hasText: 'Format' }).first()).toBeVisible();
+  await expect(page.locator('.media-data dt').filter({ hasText: 'Bitrate' }).first()).toBeVisible();
+  await expect(page.locator('#radar')).toHaveClass(/is-active/);
+  await expect(page.getByText('Radar fixture')).toBeVisible();
+  const gradientRules = await page.evaluate(() =>
+    [...document.styleSheets]
+      .flatMap((sheet) => {
+        try {
+          return [...sheet.cssRules].map((rule) => rule.cssText);
+        } catch {
+          return [];
+        }
+      })
+      .filter((rule) => /(?:linear|radial|conic)-gradient/i.test(rule)),
+  );
+  expect(gradientRules).toEqual([]);
+  await page.getByRole('button', { name: 'Play preview' }).click();
+  await expect(page.locator('#player-stage video')).toHaveAttribute(
+    'src',
+    'https://media.example/sample.mp4',
+  );
 });

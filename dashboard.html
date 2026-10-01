@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/styles.css" />
+    <title>Video Pro Finder</title>
+  </head>
+  <body class="dashboard-page">
+    <main class="dashboard-shell">
+      <header class="dashboard-header glass-surface">
+        <div class="dashboard-brand">
+          <img src="/icons/icon-default-32.png" width="38" height="38" alt="" />
+          <div>
+            <h1>Video Pro Finder</h1>
+            <p id="site-label">Connecting to active tab…</p>
+          </div>
+        </div>
+        <div class="dashboard-actions">
+          <button id="scan" class="button primary" type="button">Scan page</button>
+          <button id="all-sites" class="button quiet" type="button">
+            Enable all-sites detection
+          </button>
+          <a class="button quiet" href="library.html">Library</a>
+          <button id="settings" class="button quiet" type="button">Settings</button>
+        </div>
+      </header>
+
+      <section class="dashboard-summary" aria-label="Detection summary">
+        <div><strong id="source-count">0</strong><span>sources</span></div>
+        <div><strong id="downloadable-count">0</strong><span>direct files</span></div>
+        <div><strong id="protected-count">0</strong><span>protected</span></div>
+        <div><strong id="scan-time">Not scanned</strong><span>last scan</span></div>
+        <p id="status" role="status">Scan the active page to inspect browser-exposed media.</p>
+      </section>
+
+      <div class="dashboard-columns">
+        <section class="workspace-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">Current page</span>
+              <h2>Detected media</h2>
+            </div>
+            <span id="source-total" class="muted">0 items</span>
+          </div>
+          <div id="sources" class="dashboard-sources" aria-live="polite"></div>
+        </section>
+        <aside class="workspace-rail">
+          <section class="workspace-panel preview-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="eyebrow">Native playback</span>
+                <h2 id="preview-title">Preview</h2>
+              </div>
+            </div>
+            <div id="player-stage" class="player-stage">
+              <p id="preview-empty">Choose a compatible direct video or audio source.</p>
+            </div>
+            <p id="preview-note" class="muted">
+              Protected or browser-incompatible streams remain unavailable here.
+            </p>
+          </section>
+          <section class="workspace-panel queue-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="eyebrow">Browser downloads</span>
+                <h2>Download radar</h2>
+              </div>
+              <span id="queue-count" class="muted">0 active</span>
+            </div>
+            <div class="radar-layout">
+              <div class="radar" id="radar" aria-hidden="true">
+                <span class="radar-ring radar-ring-one"></span>
+                <span class="radar-ring radar-ring-two"></span>
+                <span class="radar-ring radar-ring-three"></span>
+                <span class="radar-dot"></span>
+                <span class="radar-sweep"></span>
+              </div>
+              <div id="queue" class="dashboard-queue">
+                <p class="muted">Waiting for downloads.</p>
+              </div>
+            </div>
+          </section>
+          <section class="workspace-panel privacy-panel">
+            <strong>Local by default</strong>
+            <p>Sources and activity stay in this browser profile. No telemetry is enabled.</p>
+          </section>
+        </aside>
+      </div>
+    </main>
+
+    <dialog id="authority-dialog" class="authority-dialog">
+      <form id="authority-form">
+        <div class="dialog-heading">
+          <div class="eyebrow">Before you save</div>
+          <h2>Confirm your authority</h2>
+        </div>
+        <div id="authority-source" class="authority-source"></div>
+        <div id="authority-filename" class="authority-source"></div>
+        <label class="field-label" for="authority-basis">Authority basis</label>
+        <select id="authority-basis" required>
+          <option value="">Choose one</option>
+          <option value="owner">I created or own this media</option>
+          <option value="permission">I have explicit permission</option>
+          <option value="official_download">The provider offers this file for download</option>
+          <option value="public_domain">The media is public domain</option>
+          <option value="compatible_license">The licence permits my intended use</option>
+          <option value="organizational_authority">Documented organizational authority</option>
+        </select>
+        <label class="field-label" for="case-reference">Reference (optional)</label
+        ><input id="case-reference" maxlength="120" />
+        <label class="field-label" for="organization-name">Organization (optional)</label
+        ><input id="organization-name" maxlength="120" />
+        <label class="field-label" for="authorization-note">Note (optional)</label
+        ><textarea id="authorization-note" maxlength="500" rows="2"></textarea>
+        <label class="check-row"
+          ><input id="authority-confirm" type="checkbox" /><span
+            >I confirm that I have authority to save this media.</span
+          ></label
+        >
+        <p class="disclaimer">
+          This declaration is not verified. It never overrides a protected-media block.
+        </p>
+        <div class="dialog-actions">
+          <button type="button" id="cancel-download" class="button quiet">Cancel</button
+          ><button type="submit" id="start-download" class="button primary" disabled>
+            Start download
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <script type="module" src="/dashboard.js"></script>
+  </body>
+</html>

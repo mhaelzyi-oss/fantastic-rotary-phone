@@ -9,6 +9,7 @@
     <link rel="modulepreload" crossorigin href="/assets/preferences.js">
     <link rel="modulepreload" crossorigin href="/assets/filenameTemplate.js">
     <link rel="modulepreload" crossorigin href="/assets/protectionDetector.js">
+    <link rel="modulepreload" crossorigin href="/assets/qualityAdvisor.js">
     <link rel="modulepreload" crossorigin href="/assets/constants.js">
     <link rel="modulepreload" crossorigin href="/assets/sourceNormalizer.js">
     <link rel="stylesheet" crossorigin href="/assets/preferences.css">
@@ -16,27 +17,13 @@
   <body>
     <main class="popup-shell">
       <header class="topbar">
-        <div class="brand-mark" aria-hidden="true">VP</div>
+        <img class="brand-mark" src="/icons/icon-default-32.png" alt="" />
         <div class="brand-copy">
           <strong>Video Pro Finder</strong><span id="origin">Current page</span>
         </div>
-        <button id="scan" class="icon-button" title="Scan this page" aria-label="Scan this page">
-          ↻</button
-        ><button
-          id="open-library"
-          class="icon-button"
-          title="Open library"
-          aria-label="Open library"
-        >
-          ▤</button
-        ><button
-          id="open-settings"
-          class="icon-button"
-          title="Open settings"
-          aria-label="Open settings"
-        >
-          ⚙
-        </button>
+        <button id="scan" class="icon-button" title="Scan this page">Scan</button>
+        <button id="open-library" class="icon-button" title="Open library">Library</button>
+        <button id="open-settings" class="icon-button" title="Open settings">Settings</button>
       </header>
       <section class="summary-strip" aria-label="Scan summary">
         <div><strong id="eligible-count">0</strong><span>eligible</span></div>

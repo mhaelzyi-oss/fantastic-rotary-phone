@@ -190,7 +190,7 @@ export const DEFAULT_PREFS: UserPrefs = {
   maxHeight: "auto",
   activeBubbles: ["auto"],
   saveAs: false,
-  subfolder: "GoldenWebSave",
+  subfolder: "KUIVideoExtractor",
   conflict: "uniquify",
   allowHosts: [],
   blockHosts: [],

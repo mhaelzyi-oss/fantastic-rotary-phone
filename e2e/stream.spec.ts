@@ -88,7 +88,7 @@ test("an HLS stream is fetched by the page, joined in order, and saved as one fi
   // The playlist text was NOT saved as a video: the file is the three joined segments.
   expect(saved!.size).toBe(3 * 188 * 10);
   expect(saved!.filename).toMatch(/\.ts$/);
-  expect(saved!.filename).toMatch(/^GoldenWebSave\//);
+  expect(saved!.filename).toMatch(/^KUIVideoExtractor\//);
   // First packet of the first segment: sync byte, segment 0, packet 0.
   expect(saved!.head.slice(0, 3)).toEqual([0x47, 0, 0]);
 

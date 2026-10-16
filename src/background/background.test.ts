@@ -125,13 +125,13 @@ describe("direct files", () => {
     const res = await m.requests.handleStart(start("https://cdn.example.com/a.mp4"));
     expect(res.ok).toBe(true);
     expect(env.calls.download).toHaveLength(1);
-    expect(env.calls.download[0]).toMatchObject({ url: "https://cdn.example.com/a.mp4", filename: "GoldenWebSave/clip.mp4" });
+    expect(env.calls.download[0]).toMatchObject({ url: "https://cdn.example.com/a.mp4", filename: "KUIVideoExtractor/clip.mp4" });
 
     env.downloads[0]!.state = "complete";
     env.downloads[0]!.bytesReceived = 100;
     await m.queue.onChromeDownloadChanged({ id: 1, state: { current: "complete" } } as chrome.downloads.DownloadDelta);
     const history = env.local.get(HISTORY_KEY) as HistoryItem[];
-    expect(history[0]).toMatchObject({ ok: true, filename: "GoldenWebSave/clip.mp4" });
+    expect(history[0]).toMatchObject({ ok: true, filename: "KUIVideoExtractor/clip.mp4" });
     const jobs = await m.queue.listJobs();
     expect(jobs[0]?.state).toBe("complete");
   });
@@ -177,12 +177,12 @@ describe("HLS in the page", () => {
     const ready = await m.queue.onHlsReady({ type: "HLS_READY", jobId, blobUrl: "blob:https://example.com/abc", filename: "clip.ts", bytes: 9999 }, 7);
     expect(ready).toBe("started");
     expect(env.calls.download).toHaveLength(1);
-    expect(env.calls.download[0]).toMatchObject({ url: "blob:https://example.com/abc", filename: "GoldenWebSave/clip.ts" });
+    expect(env.calls.download[0]).toMatchObject({ url: "blob:https://example.com/abc", filename: "KUIVideoExtractor/clip.ts" });
 
     env.downloads[0]!.state = "complete";
     await m.queue.onChromeDownloadChanged({ id: 1, state: { current: "complete" } } as chrome.downloads.DownloadDelta);
     const history = env.local.get(HISTORY_KEY) as HistoryItem[];
-    expect(history[0]).toMatchObject({ ok: true, filename: "GoldenWebSave/clip.ts" });
+    expect(history[0]).toMatchObject({ ok: true, filename: "KUIVideoExtractor/clip.ts" });
   });
 
   it("ignores reports from another tab and non-blob addresses", async () => {
@@ -215,7 +215,7 @@ describe("HLS in the page", () => {
     const suggest = vi.fn();
     expect(m.queue.onDeterminingFilename({ id: 1, url: "blob:https://example.com/x" } as chrome.downloads.DownloadItem, suggest)).toBe(true);
     await vi.waitFor(() => expect(suggest).toHaveBeenCalled());
-    expect(suggest).toHaveBeenCalledWith(expect.objectContaining({ filename: "GoldenWebSave/a.ts" }));
+    expect(suggest).toHaveBeenCalledWith(expect.objectContaining({ filename: "KUIVideoExtractor/a.ts" }));
     // Downloads that are not ours are never touched.
     expect(m.queue.onDeterminingFilename({ id: 2, url: "https://other.example.com/x.zip" } as chrome.downloads.DownloadItem, vi.fn())).toBe(false);
   });

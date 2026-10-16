@@ -202,7 +202,7 @@ test("downloading a public file hands the right file name and URL to the worker"
   const downloads = await page.evaluate(() => window.__downloads);
   expect(downloads).toHaveLength(1);
   expect(downloads[0]!.url).toMatch(/\/media\/sample\.mp4$/);
-  expect(downloads[0]!.filename).toMatch(/^GoldenWebSave\/[\w.-]+\.mp4$/);
+  expect(downloads[0]!.filename).toMatch(/^KUIVideoExtractor\/[\w.-]+\.mp4$/);
   await expect(page.getByText(/1 saved/)).toBeVisible({ timeout: 5000 });
   await ui(page).screenshot({ path: join(SHOTS, "download-progress.png") });
   await page.getByRole("tab", { name: /History/ }).click();

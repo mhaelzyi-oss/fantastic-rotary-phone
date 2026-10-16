@@ -6,7 +6,7 @@ describe("mergePrefs", () => {
   it("fills scan flags and download defaults for old stored objects", () => {
     const merged = mergePrefs({ prompt: "{title}.mp4", preferredQuality: "720" });
     expect(merged.prompt).toBe("{title}.mp4");
-    expect(merged.subfolder).toBe("GoldenWebSave");
+    expect(merged.subfolder).toBe("KUIVideoExtractor");
     expect(merged.saveAs).toBe(false);
     expect(merged.scan).toEqual({ hidden: true, scripts: true, iframes: true });
     expect(merged.showBadge).toBe(true);

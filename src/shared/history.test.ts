@@ -3,7 +3,7 @@ import { filterHistory, withSubfolder } from "./history";
 
 describe("withSubfolder", () => {
   it("prefixes a safe Downloads subfolder", () => {
-    expect(withSubfolder("clip.mp4", "GoldenWebSave")).toBe("GoldenWebSave/clip.mp4");
+    expect(withSubfolder("clip.mp4", "KUIVideoExtractor")).toBe("KUIVideoExtractor/clip.mp4");
   });
 
   it("skips an empty folder", () => {

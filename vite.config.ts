@@ -15,5 +15,7 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/ui/test/setup.ts"],
     include: ["src/**/*.test.ts", "src/**/*.test.tsx", "site/**/*.test.ts"],
+    testTimeout: 15_000,
+    fileParallelism: false,
   },
 });

@@ -3,7 +3,6 @@
 /** Change this to an address you control before publishing to addons.mozilla.org. It is only an identifier. */
 export const FIREFOX_ID = "kui-video-extractor@krypton-inc.example";
 export const FIREFOX_MIN_VERSION = "140.0";
-export const FIREFOX_ANDROID_MIN_VERSION = "142.0";
 
 export function toFirefoxManifest(chromium) {
   const m = structuredClone(chromium);
@@ -22,7 +21,6 @@ export function toFirefoxManifest(chromium) {
       // The extension collects and transmits nothing. Mozilla asks every new extension to say so.
       data_collection_permissions: { required: ["none"] },
     },
-    gecko_android: { strict_min_version: FIREFOX_ANDROID_MIN_VERSION },
   };
   return m;
 }

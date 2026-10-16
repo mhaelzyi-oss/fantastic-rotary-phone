@@ -85,6 +85,7 @@ section.block { padding: 72px 0; }
 .nav nav a { color: var(--fg); text-decoration: none; font-weight: 500; font-size: 0.95rem; padding: 6px 12px; border-radius: 999px; }
 .nav nav a:hover { background: var(--blue-50); }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--fg); text-decoration: none; font-weight: 650; letter-spacing: -0.02em; }
+.hero .publisher { display: block; width: min(280px, 72vw); height: auto; margin: 0 auto 18px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 999px; font-weight: 600; text-decoration: none; border: 1px solid transparent; font-size: 1rem; cursor: pointer; transition: transform .12s ease, box-shadow .15s ease; }
 .btn:hover { transform: translateY(-1px); }
 .btn-dark { background: #0a0a0a; color: #fff; }

@@ -176,7 +176,7 @@ export type Diagnostic = {
   host?: string;
 };
 
-export const DEFAULT_PROMPT = "{title}_{YYYYMMDD}_{quality}.mp4";
+export const DEFAULT_PROMPT = "{title}_{host}_{YYYYMMDD}_{quality}.mp4";
 
 export const DEFAULT_PREFS: UserPrefs = {
   cliTool: "yt-dlp",

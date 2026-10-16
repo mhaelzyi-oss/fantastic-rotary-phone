@@ -40,11 +40,11 @@ export function FinderApp({ layout }: Props) {
   return (
     <div className={`${styles.shell} ${layout === "panel" ? styles.panel : styles.popup}`}>
       <div className={styles.ornaments} aria-hidden="true">
-        <svg className={styles.o1} viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5-11-6.5z" /></svg>
-        <svg className={styles.o2} viewBox="0 0 24 24"><path d="M12 4v11" /><path d="M7 11l5 5 5-5" /><path d="M5 20h14" /></svg>
-        <svg className={styles.o3} viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2" /><path d="M8 6v12M16 6v12" /></svg>
-        <svg className={styles.o4} viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5-11-6.5z" /></svg>
-        <svg className={styles.o5} viewBox="0 0 24 24"><path d="M12 4v11" /><path d="M7 11l5 5 5-5" /><path d="M5 20h14" /></svg>
+        <svg className={styles.o1} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
+        <svg className={styles.o2} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
+        <svg className={styles.o3} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
+        <svg className={styles.o4} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
+        <svg className={styles.o5} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
       </div>
       <header className={`${styles.glass} ${styles.top}`}>
         <div className={styles.brand}>

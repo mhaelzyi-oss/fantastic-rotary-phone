@@ -59,17 +59,12 @@ if (existsSync(join(root, "dist-firefox", "manifest.json"))) addZip("kui-video-e
 const sums = downloads.map((d) => `${d.hash}  ${d.file}`).join("\n") + "\n";
 writeFileSync(join(out, "downloads", "SHA256SUMS.txt"), sums);
 
-function store(href, label, note) {
-  if (href) return `<a class="store" href="${href}" rel="noopener">${label}</a>`;
-  return `<span class="store off">${label} <small>${note}</small></span>`;
+function store(href, label) {
+  if (!href) return "";
+  return `<a class="store" href="${href}" rel="noopener">${label}</a>`;
 }
 
-const badges = [
-  store(CHROME_STORE_URL, "Chrome", "zip below"),
-  store(EDGE_STORE_URL, "Edge", "zip below"),
-  store("", "Brave", "Chromium zip"),
-  store(FIREFOX_STORE_URL, "Firefox", "zip below"),
-].join("");
+const badges = [store(CHROME_STORE_URL, "Chrome"), store(EDGE_STORE_URL, "Edge"), store(FIREFOX_STORE_URL, "Firefox")].join("");
 
 function fmtSize(n) {
   return n > 1024 * 1024 ? `${(n / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1024))} KB`;
@@ -90,7 +85,7 @@ const downloadCards = [
   card(chromium, "Chrome, Edge, Brave", [
     "Open the extensions page (chrome://extensions, edge://extensions, or brave://extensions).",
     "Turn on Developer mode.",
-    "Choose Load unpacked and select the unzipped folder, or drag the zip if your browser offers that.",
+    "Unzip the download. Choose Load unpacked and select that folder.",
   ]),
   card(firefox, "Firefox", [
     "Open about:debugging#/runtime/this-firefox.",
@@ -121,6 +116,7 @@ page("404.html", "404.html");
 copyFileSync(join(root, "site", "style.css"), join(out, "style.css"));
 const siteMark = join(root, "public", "icons", "logo.svg");
 copyFileSync(existsSync(siteMark) ? siteMark : join(root, "branding", "krypton-ultimate-inc-ii.svg"), join(out, "logo.svg"));
+copyFileSync(join(root, "branding", "krypton-ultimate-inc-ii.svg"), join(out, "publisher.svg"));
 
 const fontSrc = join(root, "node_modules", "@fontsource-variable", "instrument-sans", "files", "instrument-sans-latin-wght-normal.woff2");
 if (existsSync(fontSrc)) copyFileSync(fontSrc, join(out, "fonts", "instrument-sans-latin.woff2"));

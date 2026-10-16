@@ -2,9 +2,9 @@
 
 ![Krypton Ultimate Inc II](branding/krypton-ultimate-inc-ii.svg)
 
-Extract the public video file from the page you are watching. Publisher: **Krypton Ultimate Inc II**.
+Extract the public video file from the page you are watching.
 
-Tools: **Detect**, **Analyze**, **Quality**, **Library**, **Names**, plus this **Extractor** extension.
+Publisher: **Krypton Ultimate Inc II**. Tools: Detect, Analyze, Quality, Library, Names.
 
 ## Install
 
@@ -13,7 +13,15 @@ npm install
 npm run build
 ```
 
-Load unpacked from `dist` (Chrome, Edge, Brave). Firefox build is `dist-firefox`.
+Chrome / Edge / Brave: `chrome://extensions` (or `edge://extensions` / `brave://extensions`) → Developer mode → Load unpacked → `dist`.
+
+Firefox:
+
+```bash
+npm run build:firefox
+```
+
+Then `about:debugging#/runtime/this-firefox` → Load Temporary Add-on → `dist-firefox/manifest.json`.
 
 ## Develop
 

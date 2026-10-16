@@ -69,6 +69,9 @@ describe.skipIf(skip)("published site", () => {
 
   it("bundles its own font and logo, so it never fetches them from elsewhere", () => {
     expect(existsSync(join(dist, "logo.svg"))).toBe(true);
+    expect(existsSync(join(dist, "publisher.svg"))).toBe(true);
+    expect(html("index.html")).toMatch(/src="\/publisher\.svg"/);
+    expect(html("index.html")).not.toMatch(/class="store off"/);
     expect(existsSync(join(dist, "fonts", "instrument-sans-latin.woff2"))).toBe(true);
     const css = readFileSync(join(dist, "style.css"), "utf8");
     expect(css).toMatch(/url\("\/fonts\/instrument-sans-latin\.woff2"\)/);

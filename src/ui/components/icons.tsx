@@ -26,6 +26,7 @@ function Icon({ size = 16, children, ...rest }: IconProps & { children: ReactNod
 export function Logo({ size = 36, ...rest }: Omit<SVGProps<SVGSVGElement>, "children"> & { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 96 96" role="img" aria-label="KUI Video Extractor" focusable="false" {...rest}>
+      <rect x="4" y="4" width="88" height="88" rx="24" fill="#111821" />
       <g fill="none" stroke="#d4af37" strokeWidth="3" strokeLinejoin="round">
         <path d="M48 7 83 27v42L48 89 13 69V27z" />
         <path d="m35 27 0 42m0-21 27-21M35 48l29 21" stroke="#ffd966" strokeWidth="6" />

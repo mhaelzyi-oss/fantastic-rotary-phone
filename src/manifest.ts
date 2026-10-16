@@ -10,7 +10,7 @@ export default defineManifest({
     16: "icons/logo-idle-16.png",
     32: "icons/logo-idle-32.png",
     48: "icons/logo-idle-48.png",
-    128: "icons/logo-found-128.png",
+    128: "icons/logo-idle-128.png",
   },
   side_panel: {
     default_path: "src/ui/sidepanel/index.html",
@@ -47,5 +47,4 @@ export default defineManifest({
     extension_pages: "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
   },
   permissions: ["activeTab", "alarms", "contextMenus", "downloads", "storage", "scripting", "notifications", "sidePanel"],
-  optional_host_permissions: ["http://*/*", "https://*/*"],
 });

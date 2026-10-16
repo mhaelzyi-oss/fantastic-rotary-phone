@@ -1,0 +1,18 @@
+﻿<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Streamed media harness</title>
+  </head>
+  <body>
+    <!-- Media that is only ever loaded by scripts: there is no URL in the HTML for a scanner to find. -->
+    <main id="page">
+      <h1>Script-loaded media</h1>
+      <p>Nothing here names a media file. A player script fetches it, as streaming sites do.</p>
+      <video id="player" controls muted></video>
+    </main>
+    <div id="ui"></div>
+    <script type="module" src="./stream.tsx"></script>
+  </body>
+</html>

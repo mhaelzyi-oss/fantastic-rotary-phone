@@ -1,0 +1,213 @@
+.wrap {
+  --period: 3.2s;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.radar {
+  position: relative;
+  flex: none;
+  width: var(--radar-size, 188px);
+  height: var(--radar-size, 188px);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, var(--radar-fill), transparent 72%),
+    var(--glass);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--glass-edge);
+  box-shadow:
+    var(--glass-shine),
+    inset 0 0 0 0.5px var(--glass-hair),
+    var(--card-shadow);
+  overflow: hidden;
+}
+
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--radar-ring);
+  pointer-events: none;
+}
+
+.r1 {
+  inset: 8%;
+}
+
+.r2 {
+  inset: 21%;
+}
+
+.r3 {
+  inset: 33%;
+}
+
+.crossH,
+.crossV {
+  position: absolute;
+  background: var(--radar-ring);
+  pointer-events: none;
+}
+
+.crossH {
+  left: 4%;
+  right: 4%;
+  top: 50%;
+  height: 1px;
+}
+
+.crossV {
+  top: 4%;
+  bottom: 4%;
+  left: 50%;
+  width: 1px;
+}
+
+.sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 250deg, rgb(37 99 235 / 0%) 252deg, rgb(37 99 235 / 34%) 359deg, rgb(37 99 235 / 62%) 360deg);
+  animation: spin var(--period) linear infinite;
+  pointer-events: none;
+}
+
+.core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  width: calc(var(--radar-size, 188px) * 0.31);
+  height: calc(var(--radar-size, 188px) * 0.31);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  backdrop-filter: blur(12px) saturate(180%);
+  border: 1px solid var(--glass-edge);
+  box-shadow: var(--glass-shine), 0 6px 16px -6px rgb(37 99 235 / 35%);
+  pointer-events: none;
+}
+
+.core strong {
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.core small {
+  font-size: 9px;
+  line-height: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-fg);
+}
+
+.blip {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: 0;
+  border-radius: 50%;
+  background: var(--blue-600);
+  box-shadow: 0 0 0 3px rgb(37 99 235 / 18%);
+  opacity: 0.55;
+  animation: lit var(--period) linear infinite;
+  animation-delay: calc(var(--a) / 360 * var(--period));
+}
+
+.blip::after {
+  content: "";
+  /* The ping ring grows to 3x and would otherwise swallow clicks meant for neighbouring blips. */
+  pointer-events: none;
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1.5px solid var(--blue-500);
+  opacity: 0;
+  animation: ping var(--period) ease-out infinite;
+  animation-delay: calc(var(--a) / 360 * var(--period));
+}
+
+.blip[data-locked="true"] {
+  background: var(--muted-fg);
+  box-shadow: 0 0 0 3px rgb(115 115 115 / 18%);
+}
+
+.blip[data-locked="true"]::after {
+  border-color: var(--muted-fg);
+  border-style: dashed;
+}
+
+.blip[data-selected="true"] {
+  opacity: 1;
+  box-shadow: 0 0 0 3px var(--glass-strong), 0 0 0 5px var(--blue-600);
+}
+
+.caption {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1rem;
+  font-weight: 500;
+  color: var(--muted-fg);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes lit {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.35);
+  }
+  22% {
+    opacity: 0.55;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0.55;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes ping {
+  0% {
+    opacity: 0.85;
+    transform: scale(0.8);
+  }
+  40% {
+    opacity: 0;
+    transform: scale(3);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sweep {
+    animation: none;
+    transform: rotate(40deg);
+    opacity: 0.6;
+  }
+
+  .blip,
+  .blip::after {
+    animation: none;
+  }
+
+  .blip {
+    opacity: 1;
+  }
+}

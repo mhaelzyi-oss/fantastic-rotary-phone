@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Radar fixture — public demo streams</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; line-height: 1.5; }
+      video { width: 100%; background: #000; }
+    </style>
+  </head>
+  <body>
+    <h1>Radar fixture</h1>
+    <p>
+      A page with several public streams of different qualities, one hidden player, and two protected
+      streams (HLS with a key and DASH with ContentProtection). The extension must list the public ones and lock
+      the protected ones. It never decrypts anything.
+    </p>
+    <video controls>
+      <source src="https://cdn.example.com/films/uhd-2160p.mp4" type="video/mp4" />
+    </video>
+    <video controls>
+      <source src="https://cdn.example.com/films/hd-1080p.mp4" type="video/mp4" />
+    </video>
+    <video controls>
+      <source src="https://cdn.example.com/films/sd-480p.mp4" type="video/mp4" />
+    </video>
+    <video controls>
+      <source src="/media/sample.mp4" type="video/mp4" />
+    </video>
+    <video hidden src="https://cdn.example.com/films/hidden-720p.mp4"></video>
+    <div data-src="/media/clear.m3u8"></div>
+    <div data-src="/media/protected.m3u8"></div>
+    <div data-src="/media/protected.mpd"></div>
+    <script>
+      window.__player = { hls: new URL("/media/clear.m3u8", location.href).href };
+    </script>
+  </body>
+</html>

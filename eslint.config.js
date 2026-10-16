@@ -1,47 +1,28 @@
-export default [
+import js from "@eslint/js";
+import globals from "globals";
+import reactHooks from "eslint-plugin-react-hooks";
+import tseslint from "typescript-eslint";
+
+export default tseslint.config(
+  { ignores: ["dist", "dist-firefox", "site-dist", "node_modules", "test-results", "playwright-report", "public", "release"] },
+  js.configs.recommended,
+  { languageOptions: { globals: { ...globals.node, ...globals.browser } } },
+  // Code that runs inside extension pages in the real-browser check.
+  { files: ["scripts/real-browser.mjs"], languageOptions: { globals: { chrome: "readonly" } } },
+  // Control characters are matched on purpose: they are what gets stripped from names and refused in commands.
+  { rules: { "no-control-regex": "off" } },
+  ...tseslint.configs.recommended,
   {
-    ignores: [
-      'dist/**',
-      'chrome-extension/**',
-      'node_modules/**',
-      'coverage/**',
-      'playwright-report/**',
-    ],
-  },
-  {
-    files: ['**/*.js'],
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      globals: {
-        chrome: 'readonly',
-        crypto: 'readonly',
-        location: 'readonly',
-        confirm: 'readonly',
-        document: 'readonly',
-        fetch: 'readonly',
-        TextDecoder: 'readonly',
-        window: 'readonly',
-        navigator: 'readonly',
-        URL: 'readonly',
-        DOMParser: 'readonly',
-        MutationObserver: 'readonly',
-        HTMLElement: 'readonly',
-        Blob: 'readonly',
-        setTimeout: 'readonly',
-        clearTimeout: 'readonly',
-        console: 'readonly',
-        process: 'readonly',
-      },
-    },
+    files: ["src/**/*.{ts,tsx}", "harness/**/*.{ts,tsx}"],
+    plugins: { "react-hooks": reactHooks },
     rules: {
-      'no-undef': 'error',
-      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      'no-eval': 'error',
+      ...reactHooks.configs.recommended.rules,
+      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_", varsIgnorePattern: "^_" }],
     },
   },
   {
-    files: ['__tests__/**/*.test.js'],
-    languageOptions: { globals: { test: 'readonly', expect: 'readonly', jest: 'readonly' } },
+    // Tests and the harness are allowed to poke at internals.
+    files: ["**/*.test.{ts,tsx}", "e2e/**", "harness/**"],
+    rules: { "@typescript-eslint/no-explicit-any": "off", "@typescript-eslint/no-non-null-assertion": "off" },
   },
-];
+);

@@ -1,0 +1,9 @@
+export const PREFS_KEY = "vpf_prefs";
+export const HISTORY_KEY = "vpf_history";
+export const QUEUE_KEY = "vpf_queue";
+export const MEDIA_KEY = "vpf_media";
+export const MAX_HISTORY = 20;
+export const LIBRARY_KEY = "vpf_library";
+export const DIAG_KEY = "vpf_diagnostics";
+export const SCHEMA_KEY = "vpf_schema";
+export const SCANS_KEY = "vpf_scans";

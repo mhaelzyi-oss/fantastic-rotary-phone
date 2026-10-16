@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KUI Video Extractor demo</title>
+    <meta property="og:video" content="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" />
+    <script type="application/ld+json">
+      {
+        "@type": "VideoObject",
+        "name": "CC0 flower clip",
+        "contentUrl": "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+      }
+    </script>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 720px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        line-height: 1.5;
+      }
+      video {
+        width: 100%;
+        background: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>KUI Video Extractor — demo</h1>
+    <p>
+      Public-domain sample video (MDN CC0 flower). Load this page in Chrome, open the extension, and confirm
+      preview, quality list, details, and download. Do not use the extension to take copyrighted media you
+      are not allowed to copy.
+    </p>
+    <video controls crossorigin="anonymous">
+            <source src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4" />
+      <track kind="subtitles" src="./media/captions.vtt" srclang="en" label="English" default />
+    </video>
+    <ul>
+      <li><a href="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4">Direct MP4</a></li>
+      <li><a href="./media/master.m3u8">HLS master playlist</a></li>
+      <li><a href="./media/stream.mpd">DASH manifest</a></li>
+    </ul>
+    <video hidden src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"></video>
+    <script>
+      window.__hiddenStream = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4";
+    </script>
+  </body>
+</html>

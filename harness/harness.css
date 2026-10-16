@@ -1,0 +1,25 @@
+body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 24px;
+  align-items: start;
+  padding: 24px;
+}
+
+#page {
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  max-width: 560px;
+}
+
+#page video {
+  width: 100%;
+  background: #000;
+  margin-bottom: 12px;
+}
+
+#ui {
+  position: sticky;
+  top: 24px;
+  width: 400px;
+}

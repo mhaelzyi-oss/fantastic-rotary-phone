@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>KUI Video Extractor harness</title>
+  </head>
+  <body>
+    <!-- Fixture page: public streams of several qualities, a hidden player, and two protected streams. -->
+    <main id="page">
+      <h1>Radar fixture</h1>
+      <p>Public demo streams plus two protected ones (HLS key, DASH ContentProtection). Nothing is decrypted.</p>
+      <video controls><source src="https://cdn.example.com/films/uhd-2160p.mp4" type="video/mp4" /></video>
+      <video controls><source src="https://cdn.example.com/films/hd-1080p.mp4" type="video/mp4" /></video>
+      <video controls><source src="https://cdn.example.com/films/sd-480p.mp4" type="video/mp4" /></video>
+      <video controls><source src="/media/sample.mp4" type="video/mp4" /></video>
+      <video hidden src="https://cdn.example.com/films/hidden-720p.mp4"></video>
+      <div data-src="/media/clear.m3u8"></div>
+      <div data-src="/media/protected.m3u8"></div>
+      <div data-src="/media/protected.mpd"></div>
+    </main>
+    <div id="ui"></div>
+    <script type="module" src="./main.tsx"></script>
+  </body>
+</html>

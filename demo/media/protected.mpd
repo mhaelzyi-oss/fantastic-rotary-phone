@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MPD xmlns="urn:mpeg:dash:schema:mpd:2011" type="static" mediaPresentationDuration="PT30S" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011">
+  <Period>
+    <AdaptationSet mimeType="video/mp4" contentType="video">
+      <ContentProtection schemeIdUri="urn:uuid:edef8ba9-79d6-4ace-a3c8-27dcd51d21ed" />
+      <Representation id="v1" bandwidth="4000000" width="1920" height="1080" codecs="avc1.640028">
+        <BaseURL>https://cdn.example.com/drm/video-1080.mp4</BaseURL>
+        <SegmentBase indexRange="0-800" />
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>

@@ -1,0 +1,133 @@
+.page {
+  display: grid;
+  gap: 14px;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 28px 16px 48px;
+  color: var(--fg);
+}
+
+.glass {
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-edge);
+  border-radius: var(--radius-card);
+  box-shadow: var(--glass-shine), inset 0 0 0 0.5px var(--glass-hair), var(--card-shadow);
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+}
+
+.logo {
+  flex: none;
+  display: block;
+  filter: drop-shadow(0 6px 10px rgb(0 0 0 / 22%));
+}
+
+.h1 {
+  margin: 0;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.sub {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-fg);
+}
+
+.form {
+  display: grid;
+  gap: 14px;
+}
+
+.fieldset {
+  margin: 0;
+  padding: 18px 20px 14px;
+  border: 1px solid var(--glass-edge);
+}
+
+.legend {
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--blue-600);
+}
+
+.label {
+  display: block;
+  margin: 10px 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.check input {
+  accent-color: var(--blue-600);
+  margin: 0;
+}
+
+.input,
+.textarea,
+.select {
+  display: block;
+  width: 100%;
+  margin-top: 5px;
+  padding: 8px 10px;
+  border: 1px solid var(--row-border);
+  border-radius: var(--radius-row);
+  background: var(--glass-strong);
+  font: inherit;
+  color: inherit;
+}
+
+.textarea {
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.hint,
+.legal {
+  margin: 6px 0 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--muted-fg);
+}
+
+.legal {
+  text-align: center;
+}
+
+.saved {
+  color: var(--emerald-600);
+  font-weight: 600;
+}
+
+.primary {
+  justify-self: start;
+  padding: 8px 20px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 6px 16px -8px rgb(0 0 0 / 55%);
+}

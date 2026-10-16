@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MPD xmlns="urn:mpeg:dash:schema:mpd:2011" profiles="urn:mpeg:dash:profile:isoff-on-demand:2011" type="static">
+  <Period>
+    <AdaptationSet mimeType="video/mp4" contentType="video">
+      <Representation id="480" bandwidth="800000" width="854" height="480" codecs="avc1.42E01E">
+        <BaseURL>https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4</BaseURL>
+      </Representation>
+      <Representation id="720" bandwidth="2800000" width="1280" height="720" codecs="avc1.64001F">
+        <BaseURL>https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4</BaseURL>
+      </Representation>
+      <Representation id="1080" bandwidth="5000000" width="1920" height="1080" codecs="avc1.640028">
+        <BaseURL>https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4</BaseURL>
+      </Representation>
+    </AdaptationSet>
+  </Period>
+</MPD>

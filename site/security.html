@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Security | KUI Video Extractor</title>
+    <meta name="description" content="How KUI Video Extractor is hardened against hostile pages and tampered downloads, and how to report a vulnerability." />
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="canonical" href="{{SITE_URL}}/security.html" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    {{HEADER}}
+    <main id="main" class="doc glass">
+      <h1>Security</h1>
+      <p class="muted">An extension that runs on every page is a target. These are the measures in version {{VERSION}}, and what they do and do not cover.</p>
+
+      <h2>Hostile web pages</h2>
+      <ul>
+        <li><strong>Pages can't talk to the extension.</strong> It declares no external messaging, so web pages and other sites have no channel to it. The page-side detector sends one-way notes to the extension's own script, and every note is verified to come from the same window before it is used.</li>
+        <li><strong>The detector can only watch.</strong> It reads the content type and file size of responses the page already made. It never changes a request or response, reads no bodies or cookies, and sends nothing to any server.</li>
+        <li><strong>Only extension pages can change state.</strong> Settings, downloads, the saved list and erase are accepted only from the extension's own popup, side panel and settings page, checked by origin on every message.</li>
+        <li><strong>The background re-checks every download.</strong> The address must be http or https, must be one the extension itself found on a page (or one you already accepted), and must not be protected. File names are forced inside your Downloads folder. A modified popup can't skip this.</li>
+        <li><strong>Playlists are treated as hostile input.</strong> Only web addresses are fetched (never <code>blob:</code>, <code>data:</code>, <code>file:</code> or <code>javascript:</code>), the size and number of pieces are capped, and encrypted or live streams are refused before any piece is fetched.</li>
+        <li><strong>Names and text from pages are only ever shown as text.</strong> Nothing is inserted as HTML, and the code contains no <code>eval</code> or dynamic script creation.</li>
+      </ul>
+
+      <h2>The extension itself</h2>
+      <ul>
+        <li><strong>Strict content security policy:</strong> extension pages run only bundled scripts. No remote code, no inline script, no plugins, no changing the base address, no framing.</li>
+        <li><strong>No remote code, ever.</strong> Everything that runs ships inside the package you installed. The fonts are bundled, not fetched.</li>
+        <li><strong>Minimal reach beyond page scanning.</strong> No <code>cookies</code>, <code>history</code>, <code>tabs</code>-wide, <code>webRequest</code> or <code>nativeMessaging</code> permission is requested.</li>
+        <li><strong>The preview is opt-in</strong> so opening the popup never contacts a stream's server.</li>
+      </ul>
+
+      <h2>Supply chain and releases</h2>
+      <ul>
+        <li>Releases are built in CI from a locked dependency list with <code>npm ci</code>. The production dependencies are checked against the public advisory database on every build.</li>
+        <li>Each release publishes SHA-256 checksums. The source of each release is included so Mozilla's reviewers, and you, can rebuild it.</li>
+        <li>Dependency updates are proposed automatically and go through the same tests before they are accepted.</li>
+      </ul>
+
+      <h2>This website</h2>
+      <ul>
+        <li>Static files only: no server code, no database, no login, nothing to inject into.</li>
+        <li>A strict content security policy that allows no scripts at all, plus <code>frame-ancestors 'none'</code>, no referrer, no MIME sniffing and a locked-down permissions policy.</li>
+        <li>Served over HTTPS only. No third-party requests of any kind.</li>
+      </ul>
+
+      <h2>What it does not protect against</h2>
+      <ul>
+        <li>A page can show a fake stream. Download it and you get what that page serves, the same as clicking its link. The extension decides where files go and refuses protected or unusual ones, but it can't tell you whether a file is wise to open.</li>
+        <li>A compromised browser or operating system can read anything the extension stores.</li>
+        <li>Stores and browsers are the root of trust for updates. Install only from a store listing we link from this site, or verify the checksum.</li>
+      </ul>
+
+      <h2>Report a vulnerability</h2>
+      <p><a href="mailto:{{CONTACT_EMAIL}}">Email us</a> with steps to reproduce. Please give us a reasonable time to fix it before you publish. We will acknowledge your report, keep you updated, and credit you if you wish. Details are also in <a href="/.well-known/security.txt">security.txt</a>.</p>
+    </main>
+    {{FOOTER}}
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy and data retention | KUI Video Extractor</title>
+    <meta name="description" content="What KUI Video Extractor stores, where, for how long, and how to erase it. Short version: on your device only, and nothing is sent to us." />
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="canonical" href="{{SITE_URL}}/privacy.html" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    {{HEADER}}
+    <main id="main" class="doc glass">
+      <h1>Privacy and data retention</h1>
+      <p class="muted">Last updated {{BUILD_DATE}}. Applies to the KUI Video Extractor extension, version {{VERSION}}, and to this website.</p>
+
+      <h2>The short version</h2>
+      <ul>
+        <li>There is <strong>no account</strong>, no sign-in, and no server. Nothing the extension stores is sent to Krypton Ultimate Inc II.</li>
+        <li>No analytics, no advertising, no crash reporting, no third-party code, in the extension or on this site.</li>
+        <li>What it stores stays inside your browser, on your device. You can erase all of it in one click.</li>
+      </ul>
+
+      <h2>What the extension stores, and for how long</h2>
+      <table>
+        <thead><tr><th>Data</th><th>What it contains</th><th>Kept</th></tr></thead>
+        <tbody>
+          <tr><td>Settings</td><td>Your choices: folder, quality, filename template, command-line defaults, site lists, theme.</td><td>Until you erase data or uninstall.</td></tr>
+          <tr><td>Download queue</td><td>Addresses and file names of downloads in progress or recently finished, so they can resume after the browser sleeps.</td><td>Finished jobs are deleted after 30 days. At most 50 are kept.</td></tr>
+          <tr><td>History</td><td>Title, file name, quality, address and time of each finished or failed download.</td><td>30 days, and at most 20 entries.</td></tr>
+          <tr><td>Saved list</td><td>Streams you chose to save: address, page, title, and any tags or notes you wrote.</td><td>Until you remove them, erase data or uninstall. At most 500 items.</td></tr>
+          <tr><td>Diagnostics log</td><td>Short messages about refusals and failures. Web addresses and tokens are stripped before saving.</td><td>30 days, and at most 200 entries. You can copy or clear it at any time.</td></tr>
+          <tr><td>Latest scan per tab</td><td>The media addresses and page title found on each open tab, so the popup opens instantly.</td><td>Browser session only. Cleared when the browser closes or the tab navigates.</td></tr>
+        </tbody>
+      </table>
+      <p>History and queue entries contain the address of the video you downloaded. Some sites put a temporary access token in those addresses. That is why they expire, and why you can erase everything at any time.</p>
+
+      <h2>What the extension reads, and what it sends</h2>
+      <ul>
+        <li>On web pages it reads the page structure and the <em>type</em> of the files the page loads, to find video. It does not read passwords, form fields, cookies or page text, and it does not keep page content.</li>
+        <li>Downloads are fetched from the video's own host by your browser, or by the page you are on, exactly as if you had clicked the link. We are not in the path.</li>
+        <li>The preview in the popup only contacts a stream's server after you press <em>Load preview</em>.</li>
+        <li>The extension makes no requests to any server run by us, and loads no remote code.</li>
+      </ul>
+
+      <h2>Why each permission is needed</h2>
+      <table>
+        <thead><tr><th>Permission</th><th>Used for</th></tr></thead>
+        <tbody>
+          <tr><td>Run on web pages (http and https)</td><td>Detecting video on the pages you visit. This is the one broad permission, and it is the whole point of the tool. You can limit it with the allow and block lists in Settings.</td></tr>
+          <tr><td><code>downloads</code></td><td>Saving files to your Downloads folder.</td></tr>
+          <tr><td><code>storage</code></td><td>The data in the table above.</td></tr>
+          <tr><td><code>activeTab</code>, <code>scripting</code></td><td>Scanning the tab you open the popup on.</td></tr>
+          <tr><td><code>alarms</code></td><td>Retrying a failed download after a pause.</td></tr>
+          <tr><td><code>contextMenus</code></td><td>The right-click "Download with KUI Video Extractor" entry.</td></tr>
+          <tr><td><code>notifications</code></td><td>Telling you a download finished, if you turn that on.</td></tr>
+          <tr><td><code>sidePanel</code></td><td>The side panel layout (Chromium browsers only).</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Deleting your data</h2>
+      <ul>
+        <li><strong>All of it:</strong> open the extension's Settings, go to <em>Your data</em>, and choose <em>Erase all data</em>. It clears settings, queue, history, saved list, log and scans, and cancels pending retries.</li>
+        <li><strong>Parts:</strong> clear history from the History tab, clear the log from Settings, or remove saved items one by one.</li>
+        <li><strong>Everything, permanently:</strong> uninstall the extension. Your browser removes its stored data with it.</li>
+      </ul>
+      <p>Because we hold none of this, we cannot see, export or delete it for you. It is yours, on your device.</p>
+
+      <h2>This website</h2>
+      <ul>
+        <li>No cookies, no local storage, no scripts, no analytics, no embedded third-party content, no fonts or images loaded from other sites.</li>
+        <li>There is no sign-in. The newsletter box only opens your email app, addressed to us. This site does not keep the address.</li>
+        <li>The host that serves these pages may keep ordinary access logs (address, time, page requested) for its own operation and abuse prevention. We do not add anything to them and do not use them to identify visitors.</li>
+      </ul>
+
+      <h2>Children</h2>
+      <p>The extension collects no personal data from anyone, including children.</p>
+
+      <h2>Changes and contact</h2>
+      <p>If this policy changes, the date above changes with it, and anything that would involve collecting data would need a new version of the extension and a new permission prompt from your browser. Questions: <a href="mailto:{{CONTACT_EMAIL}}">email us</a>.</p>
+    </main>
+    {{FOOTER}}
+  </body>
+</html>

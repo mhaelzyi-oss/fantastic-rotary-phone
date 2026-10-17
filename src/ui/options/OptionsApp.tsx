@@ -17,11 +17,15 @@ export function OptionsApp() {
   const [diag, setDiag] = useState<{ text: string; count: number } | null>(null);
   const [diagNote, setDiagNote] = useState("");
   const [eraseStep, setEraseStep] = useState<"idle" | "confirm" | "done">("idle");
+  const [saves, setSaves] = useState(0);
   const timer = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     void sendMessage<UserPrefs>({ type: "GET_PREFS" }).then((next) => {
       setPrefs(mergePrefs(next ?? DEFAULT_PREFS));
+    });
+    void sendMessage<unknown[]>({ type: "GET_HISTORY" }).then((rows) => {
+      setSaves(Array.isArray(rows) ? rows.length : 0);
     });
     return () => window.clearTimeout(timer.current);
   }, []);
@@ -84,6 +88,16 @@ export function OptionsApp() {
           <p className={styles.sub}>Find the public file on this page.</p>
         </div>
       </header>
+      <div className={`${styles.glass} ${styles.pulse}`} aria-label="On this device">
+        <div>
+          <b>1</b>
+          <span>Here</span>
+        </div>
+        <div>
+          <b>{saves}</b>
+          <span>Saved</span>
+        </div>
+      </div>
       <form className={styles.form} onSubmit={(e) => void onSubmit(e)}>
         <fieldset className={group}>
           <legend className={styles.legend}>Downloads</legend>

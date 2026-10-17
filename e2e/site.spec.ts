@@ -14,6 +14,7 @@ const TYPES: Record<string, string> = {
   ".txt": "text/plain; charset=utf-8",
   ".xml": "application/xml",
   ".zip": "application/zip",
+  ".js": "text/javascript; charset=utf-8",
 };
 
 let server: Server;
@@ -38,7 +39,7 @@ test.beforeAll(async () => {
 
 test.afterAll(() => new Promise<void>((ok) => server?.close(() => ok())));
 
-test("the home page has no scripts, no cookies, and no third-party requests", async ({ page, context }) => {
+test("the home page has no cookies, no third-party requests, and only first-party pulse.js", async ({ page, context }) => {
   const outside: string[] = [];
   page.on("request", (r) => {
     if (!r.url().startsWith(origin) && !r.url().startsWith("data:")) outside.push(r.url());
@@ -46,10 +47,17 @@ test("the home page has no scripts, no cookies, and no third-party requests", as
   await page.goto(origin + "/");
   await expect(page.getByRole("heading", { name: "Extract the video." })).toBeVisible();
   await expect(page.getByRole("link", { name: "Install" }).first()).toBeVisible();
-  expect(await page.locator("script").count()).toBe(0);
+  expect(await page.locator("script").evaluateAll((nodes) => nodes.map((n) => n.getAttribute("src")))).toEqual(["/studio/pulse.js"]);
   expect(await context.cookies()).toEqual([]);
   expect(outside).toEqual([]);
   await expect(page.getByRole("heading", { name: "Stay in the loop" })).toBeVisible();
+});
+
+test("the converter on the site asks for a local file instead of hanging", async ({ page }) => {
+  await page.goto(origin + "/tools/convert/index.html");
+  await expect(page.getByRole("heading", { name: "Video Converter" })).toBeVisible();
+  await page.getByRole("button", { name: "Convert" }).click();
+  await expect(page.getByRole("status")).toContainText(/Choose a local file/);
 });
 
 test("privacy, security and 404 pages load, and the checksums file is there", async ({ page }) => {

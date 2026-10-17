@@ -70,9 +70,17 @@ export function toolPageUrl(slug: string): string {
 
 export function openToolPage(slug: string): void {
   const url = toolPageUrl(slug);
-  if (typeof chrome !== "undefined" && chrome.tabs?.create) {
-    void chrome.tabs.create({ url });
-    return;
+  const fallback = () => {
+    window.open(url, "_blank", "noopener");
+  };
+  try {
+    if (typeof chrome !== "undefined" && chrome.tabs?.create) {
+      const opened = chrome.tabs.create({ url });
+      if (opened && typeof opened.catch === "function") void opened.catch(fallback);
+      return;
+    }
+  } catch {
+    /* popup or Firefox can refuse tabs.create */
   }
-  window.open(url, "_blank", "noopener");
+  fallback();
 }

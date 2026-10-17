@@ -8,28 +8,34 @@ const skip = !existsSync(join(dist, "index.html"));
 describe.skipIf(skip)("published site", () => {
   const html = (name: string) => readFileSync(join(dist, name), "utf8");
 
-  it("ships no scripts, no inline event handlers and no third-party URLs", () => {
-    const pages = [
-      "index.html",
-      "privacy.html",
-      "security.html",
-      "404.html",
-      "tools/convert/index.html",
-      "tools/compress/index.html",
-      "tools/trim/index.html",
-      "tools/merge/index.html",
-      "tools/gif/index.html",
-      "tools/audio/index.html",
-      "tools/add-audio/index.html",
-    ];
-    for (const name of pages) {
+  it("ships no third-party URLs; marketing pages only load first-party pulse.js", () => {
+    const marketing = ["index.html", "privacy.html", "security.html", "404.html"];
+    for (const name of marketing) {
       const page = html(name);
-      expect(page, name).not.toMatch(/<script[\s>]/i);
       expect(page, name).not.toMatch(/\son[a-z]+\s*=/i);
-      expect(page, name).not.toMatch(/<(?:script|iframe|object|embed|link rel="preconnect"|img[^>]+src="https?:)/i);
+      expect(page, name).not.toMatch(/<(?:iframe|object|embed|link rel="preconnect"|img[^>]+src="https?:)/i);
       expect(page, name).not.toMatch(/src="https?:\/\//i);
       expect(page, name).not.toMatch(/href="https?:\/\/(?!kui\.video)[^"]+"/i);
       expect(page, name).not.toMatch(/\{\{[A-Z_]+\}\}/);
+      expect(page, name).toMatch(/Content-Security-Policy/);
+    }
+    const home = html("index.html");
+    expect(home.match(/<script[\s>]/gi) ?? []).toHaveLength(1);
+    expect(home).toContain('src="/studio/pulse.js"');
+    expect(html("privacy.html")).not.toMatch(/<script[\s>]/i);
+  });
+
+  it("serves working local-file tools, not scriptless placeholders", () => {
+    const slugs = ["convert", "compress", "trim", "merge", "gif", "audio", "add-audio"];
+    for (const slug of slugs) {
+      const page = html(`tools/${slug}/index.html`);
+      expect(page, slug).toMatch(/<script src="app\.js">/);
+      expect(page, slug).toMatch(/id="run"/);
+      expect(page, slug).toMatch(/type="file"/);
+      expect(page, slug).toContain("/studio/pulse.js");
+      expect(page, slug).toContain("Download zip");
+      expect(page, slug).not.toMatch(/this page on kui\.video has no scripts/i);
+      expect(page, slug).not.toMatch(/\{\{[A-Z_]+\}\}/);
     }
   });
 
@@ -42,14 +48,18 @@ describe.skipIf(skip)("published site", () => {
     expect(privacy).toMatch(/Erase all data/);
   });
 
-  it("has a CSP that forbids scripts, and a security.txt", () => {
+  it("has a CSP that forbids remote scripts, and a security.txt", () => {
     const headers = readFileSync(join(dist, "_headers"), "utf8");
-    expect(headers).toMatch(/script-src 'none'/);
+    expect(headers).toMatch(/script-src 'self'/);
     expect(headers).toMatch(/frame-ancestors 'none'/);
     expect(headers).toMatch(/default-src 'none'/);
+    expect(headers).toMatch(/Disallow: \/studio|X-Robots-Tag: noindex/);
     const txt = readFileSync(join(dist, ".well-known", "security.txt"), "utf8");
     expect(txt).toMatch(/^Contact: mailto:/m);
     expect(txt).toMatch(/^Expires: /m);
+    const robots = readFileSync(join(dist, "robots.txt"), "utf8");
+    expect(robots).toMatch(/Disallow: \/studio/);
+    expect(existsSync(join(dist, "studio", "index.html"))).toBe(true);
   });
 
   it("publishes checksums that match the zips beside them", async () => {
@@ -90,7 +100,7 @@ describe.skipIf(skip)("published site", () => {
       expect(section.match(new RegExp(`id="tool-${slug}"`, "g"))).toHaveLength(1);
       expect(section).toContain(`/tools/${slug}/`);
       expect(section).toContain(`kui-tool-${slug}-`);
-      expect(section).toContain("Open page");
+      expect(section).toContain(">Open<");
       expect(section).toContain("Download zip");
     }
     expect(section.match(/id="tool-[a-z0-9-]+"/g)).toHaveLength(8);

@@ -47,8 +47,11 @@
 
   KuiUi.bindDrop = function (el, onFiles) {
     var input = el.querySelector("input[type=file]");
-    el.addEventListener("click", function () {
-      if (input) input.click();
+    el.addEventListener("click", function (e) {
+      if (!input) return;
+      if (e.target === input) return;
+      if (e.target.closest && e.target.closest("button, a")) return;
+      input.click();
     });
     el.addEventListener("keydown", function (e) {
       if (e.key === "Enter" || e.key === " ") {

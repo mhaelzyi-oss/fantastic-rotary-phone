@@ -49,6 +49,27 @@
   padding: 14px 16px;
 }
 
+.pulse {
+  display: flex;
+  gap: 28px;
+  padding: 14px 20px;
+}
+
+.pulse b {
+  display: block;
+  font-size: 1.45rem;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.pulse span {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-fg);
+}
+
 .logo {
   flex: none;
   display: block;

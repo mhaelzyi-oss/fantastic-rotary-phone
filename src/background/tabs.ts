@@ -67,6 +67,14 @@ export async function allScans(): Promise<ScanPayload[]> {
   return [...scans.values()];
 }
 
+/** The page under the popup, not the popup window itself (Edge often reports that as currentWindow). */
+export async function activePageTab(): Promise<chrome.tabs.Tab | undefined> {
+  const last = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+  if (last[0]?.id != null && last[0].id !== chrome.tabs.TAB_ID_NONE) return last[0];
+  const cur = await chrome.tabs.query({ active: true, currentWindow: true });
+  return cur[0];
+}
+
 export async function requestScan(tabId: number, prefs: UserPrefs, contentPath: string): Promise<ScanPayload> {
   const empty: ScanPayload = { pageUrl: "", pageTitle: "", sources: [] };
   const ask = chrome.tabs.sendMessage(tabId, { type: "SCAN_PAGE", prefs } satisfies RuntimeMessage) as Promise<ScanPayload>;

@@ -86,7 +86,7 @@ async function open(page: Page, path: string) {
     if (r.status() >= 400 && !r.url().endsWith("/favicon.ico")) problems.push(`${r.status()} ${r.url()}`);
   });
   page.on("console", (m) => {
-    if (m.type() === "error" && !/Failed to load resource/.test(m.text())) problems.push(m.text());
+    if (m.type() === "error" && !/Failed to load resource|frame-ancestors/.test(m.text())) problems.push(m.text());
   });
   await page.addInitScript(stubChrome);
   await page.goto(`${origin}/${path}`);
@@ -149,6 +149,8 @@ test("built extension ships the seven local-file tool pages", async ({ page }) =
   const seen = await open(page, "tools/convert/index.html");
   await expect(page.getByRole("heading", { name: "Video Converter" })).toBeVisible();
   await expect(page.getByText("KUI Video Extractor").first()).toBeVisible();
+  await page.getByRole("button", { name: "Convert" }).click();
+  await expect(page.getByRole("status")).toContainText(/Choose a local file/);
   expect(seen.outside).toEqual([]);
   expect(seen.problems).toEqual([]);
 });

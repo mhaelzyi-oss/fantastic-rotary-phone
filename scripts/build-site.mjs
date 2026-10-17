@@ -4,7 +4,7 @@ import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync,
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { zipSync } from "fflate";
-import { collectWebToolFiles } from "./web-tools-pack.mjs";
+import { collectWebToolFiles, writeWebTools } from "./web-tools-pack.mjs";
 import { toolsMarkup, webTools, zipName } from "../site/lib/web-tools.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
@@ -12,6 +12,12 @@ const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const VERSION = pkg.version;
 const SITE_URL = (process.env.SITE_URL ?? "https://kui.video").replace(/\/$/, "");
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? "kryptonsixxoutkook@gmail.com";
+const STUDIO_KEY = process.env.STUDIO_KEY ?? "";
+const STUDIO_HASH = STUDIO_KEY ? createHash("sha256").update(STUDIO_KEY).digest("hex") : "";
+const MARKETING_CSP =
+  "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action mailto:; frame-ancestors 'none'; upgrade-insecure-requests";
+const TOOL_CSP =
+  "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' blob: data:; font-src 'self'; media-src blob:; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; worker-src 'none'";
 const CHROME_STORE_URL = process.env.CHROME_STORE_URL ?? "";
 const EDGE_STORE_URL = process.env.EDGE_STORE_URL ?? "";
 const FIREFOX_STORE_URL = process.env.FIREFOX_STORE_URL ?? "";
@@ -107,9 +113,8 @@ const downloadCards = [
   ]),
 ].join("");
 
-function page(src, dest) {
-  let html = readFileSync(join(root, "site", src), "utf8");
-  html = html
+function stamp(html) {
+  return html
     .replaceAll("{{HEADER}}", header)
     .replaceAll("{{FOOTER}}", footer)
     .replaceAll("{{VERSION}}", VERSION)
@@ -118,7 +123,20 @@ function page(src, dest) {
     .replaceAll("{{BUILD_DATE}}", BUILD_DATE)
     .replaceAll("{{BADGES}}", badges)
     .replaceAll("{{DOWNLOADS}}", downloadCards)
-    .replaceAll("{{TOOLS}}", toolsMarkup(VERSION));
+    .replaceAll("{{TOOLS}}", toolsMarkup(VERSION))
+    .replaceAll("{{STUDIO_HASH}}", STUDIO_HASH);
+}
+
+function withMarketingHead(html) {
+  if (html.includes("Content-Security-Policy")) return html;
+  return html.replace(
+    "<head>",
+    `<head>\n    <meta http-equiv="Content-Security-Policy" content="${MARKETING_CSP}" />\n    <meta name="referrer" content="no-referrer" />`,
+  );
+}
+
+function page(src, dest) {
+  let html = withMarketingHead(stamp(readFileSync(join(root, "site", src), "utf8")));
   if (html.includes("{{KICKER}}")) {
     console.error(`${src} still has {{KICKER}}`);
     process.exit(1);
@@ -132,9 +150,30 @@ page("index.html", "index.html");
 page("privacy.html", "privacy.html");
 page("security.html", "security.html");
 page("404.html", "404.html");
+
+writeWebTools(out);
 for (const tool of webTools) {
-  page(`tools/${tool.slug}/index.html`, `tools/${tool.slug}/index.html`);
+  const destPath = join(out, "tools", tool.slug, "index.html");
+  let html = readFileSync(destPath, "utf8");
+  html = html.replace(
+    "</head>",
+    `    <link rel="stylesheet" href="/style.css" />\n    <link rel="canonical" href="${SITE_URL}/tools/${tool.slug}/" />\n  </head>`,
+  );
+  const bar = `<p class="tool-chrome wrap"><a class="btn btn-ghost small" href="/#tools">All tools</a><a class="btn btn-dark small" href="/downloads/${zipName(tool.slug, VERSION)}" download data-kui-zip>Download zip</a></p>`;
+  html = html.replace("<body>", `<body>\n    ${header}\n    ${bar}`);
+  html = html.replace("</body>", `    ${footer}\n    <script src="/studio/pulse.js"></script>\n  </body>`);
+  html = stamp(html);
+  html = html.replace(
+    /Content-Security-Policy" content="[^"]+"/,
+    `Content-Security-Policy" content="${TOOL_CSP.replace(" frame-ancestors 'none';", "")}"`,
+  );
+  writeFileSync(destPath, html);
 }
+
+mkdirSync(join(out, "studio"), { recursive: true });
+writeFileSync(join(out, "studio", "index.html"), stamp(readFileSync(join(root, "site", "studio", "index.html"), "utf8")));
+copyFileSync(join(root, "site", "studio", "studio.js"), join(out, "studio", "studio.js"));
+copyFileSync(join(root, "site", "studio", "pulse.js"), join(out, "studio", "pulse.js"));
 
 copyFileSync(join(root, "site", "style.css"), join(out, "style.css"));
 const siteMark = join(root, "public", "icons", "logo.svg");
@@ -159,6 +198,8 @@ writeFileSync(
   join(out, "robots.txt"),
   `User-agent: *
 Allow: /
+Disallow: /studio
+Disallow: /store-listings.md
 Sitemap: ${SITE_URL}/sitemap.xml
 `,
 );
@@ -179,7 +220,7 @@ ${toolUrls}
 writeFileSync(
   join(out, "_headers"),
   `/*
-  Content-Security-Policy: default-src 'none'; script-src 'none'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action mailto:; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: ${MARKETING_CSP}
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
@@ -189,6 +230,14 @@ writeFileSync(
   Cross-Origin-Resource-Policy: same-origin
   X-Permitted-Cross-Domain-Policies: none
   Cache-Control: public, max-age=600
+
+/tools/*
+  Content-Security-Policy: ${TOOL_CSP}
+
+/studio/*
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
 
 /downloads/*
   Content-Disposition: attachment

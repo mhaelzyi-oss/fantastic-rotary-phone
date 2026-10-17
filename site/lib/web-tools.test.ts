@@ -35,7 +35,7 @@ describe("web tools catalog", () => {
     expect(blob.toLowerCase()).not.toMatch(/\bhls player\b|\bcast\b/);
   });
 
-  it("renders Extractor plus one card per web tool, with Open page and Download zip", () => {
+  it("renders Extractor plus one card per web tool, with Open and Download zip", () => {
     const html = toolsMarkup("1.2.0");
     expect(html.match(/id="tool-extractor"/g)).toHaveLength(1);
     expect(html).toContain("Install extension");
@@ -45,7 +45,7 @@ describe("web tools catalog", () => {
       expect(html).toContain(`>${tool.name}<`);
       expect(html).toContain(`/tools/${tool.slug}/`);
       expect(html).toContain(`/downloads/${zipName(tool.slug, "1.2.0")}`);
-      expect(html).toContain("Open page");
+      expect(html).toContain(">Open<");
       expect(html).toContain("Download zip");
     }
     expect(html.match(/id="tool-[a-z0-9-]+"/g)).toHaveLength(8);

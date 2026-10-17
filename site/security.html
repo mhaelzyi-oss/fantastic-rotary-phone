@@ -42,10 +42,12 @@
 
       <h2>This website</h2>
       <ul>
-        <li>Static files only: no server code, no database, no login, nothing to inject into.</li>
-        <li>A strict content security policy that allows no scripts at all, plus <code>frame-ancestors 'none'</code>, no referrer, no MIME sniffing and a locked-down permissions policy.</li>
+        <li>Static files only on GitHub Pages: no database, no login, nothing to inject into.</li>
+        <li>A content security policy on every page: first-party scripts only, <code>frame-ancestors 'none'</code>, no referrer, no MIME sniffing, locked-down permissions. Tool pages also set <code>worker-src 'none'</code> and never load remote media.</li>
         <li>Served over HTTPS only. No third-party requests of any kind.</li>
-        <li>The local file tools are separate downloads. They run from a file you unzipped, with <code>connect-src 'none'</code>, and they only read files you pick.</li>
+        <li>GitHub Pages has no custom rate limiter. Put Cloudflare (or similar) in front to cap <code>/studio/hit</code> and downloads. A worker for that lives in <code>edge/pulse-worker.js</code>.</li>
+        <li>Studio is unlisted, <code>noindex</code>, and passphrase-gated. It is not a public counter.</li>
+        <li>The local file tools also ship as zips. Unzipped copies keep <code>connect-src 'none'</code> and only read files you pick.</li>
       </ul>
 
       <h2>What it does not protect against</h2>

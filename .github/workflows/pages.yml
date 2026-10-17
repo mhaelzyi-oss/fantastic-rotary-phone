@@ -33,6 +33,7 @@ jobs:
           CHROME_STORE_URL: ${{ vars.CHROME_STORE_URL }}
           EDGE_STORE_URL: ${{ vars.EDGE_STORE_URL }}
           FIREFOX_STORE_URL: ${{ vars.FIREFOX_STORE_URL }}
+          STUDIO_KEY: ${{ secrets.STUDIO_KEY }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site-dist

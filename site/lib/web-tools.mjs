@@ -90,8 +90,8 @@ function webToolCard(tool, version) {
             <h3>${esc(tool.name)}</h3>
             <p class="muted">${esc(tool.summary)}</p>
             <p class="tool-actions">
-              <a class="btn btn-ghost small" href="/tools/${tool.slug}/">Open page</a>
-              <a class="btn btn-dark small" href="/downloads/${zip}" download>Download zip</a>
+              <a class="btn btn-blue small" href="/tools/${tool.slug}/">Open</a>
+              <a class="btn btn-ghost small" href="/downloads/${zip}" download data-kui-zip>Download zip</a>
             </p>
           </article>`;
 }

@@ -17,11 +17,15 @@ export function OptionsApp() {
   const [diag, setDiag] = useState<{ text: string; count: number } | null>(null);
   const [diagNote, setDiagNote] = useState("");
   const [eraseStep, setEraseStep] = useState<"idle" | "confirm" | "done">("idle");
+  const [saves, setSaves] = useState(0);
   const timer = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     void sendMessage<UserPrefs>({ type: "GET_PREFS" }).then((next) => {
       setPrefs(mergePrefs(next ?? DEFAULT_PREFS));
+    });
+    void sendMessage<unknown[]>({ type: "GET_HISTORY" }).then((rows) => {
+      setSaves(Array.isArray(rows) ? rows.length : 0);
     });
     return () => window.clearTimeout(timer.current);
   }, []);
@@ -72,13 +76,28 @@ export function OptionsApp() {
 
   return (
     <div className={styles.page}>
+      <div className={styles.ornaments} aria-hidden="true">
+        <svg className={styles.o1} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
+        <svg className={styles.o2} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
+        <svg className={styles.o3} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
+      </div>
       <header className={`${styles.glass} ${styles.top}`}>
         <Logo size={40} className={styles.logo} />
         <div>
           <h1 className={styles.h1}>KUI Video Extractor</h1>
-          <p className={styles.sub}>Krypton Ultimate Inc II · settings</p>
+          <p className={styles.sub}>Find the public file on this page.</p>
         </div>
       </header>
+      <div className={`${styles.glass} ${styles.pulse}`} aria-label="On this device">
+        <div>
+          <b>1</b>
+          <span>Here</span>
+        </div>
+        <div>
+          <b>{saves}</b>
+          <span>Saved</span>
+        </div>
+      </div>
       <form className={styles.form} onSubmit={(e) => void onSubmit(e)}>
         <fieldset className={group}>
           <legend className={styles.legend}>Downloads</legend>
@@ -186,6 +205,10 @@ export function OptionsApp() {
           <label className={styles.check}>
             <input type="checkbox" checked={prefs.cliYtdlpPage} onChange={(e) => patch("cliYtdlpPage", e.target.checked)} /> yt-dlp: use
             the page URL (its own extractors, your quality cap and subtitles)
+          </label>
+          <label className={styles.check}>
+            <input type="checkbox" checked={prefs.cliAudioOnly} onChange={(e) => patch("cliAudioOnly", e.target.checked)} /> Audio
+            only (ffmpeg / yt-dlp copy the soundtrack, never decrypt)
           </label>
           <p className={styles.hint}>
             Commands are quoted for the chosen shell. If a tool does not handle a stream type, the next suitable one is used.

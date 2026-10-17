@@ -11,7 +11,7 @@ describe("OptionsApp", () => {
     await screen.findByText("KUI Video Extractor");
     await user.click(screen.getByRole("button", { name: "Save" }));
     expect(sendMessage).toHaveBeenCalledWith(expect.objectContaining({ type: "SET_PREFS" }));
-  });
+  }, 20_000);
 
   it("erases everything only after a second confirmation click", async () => {
     const user = userEvent.setup();

@@ -92,6 +92,12 @@ export function CommandPanel({ index }: Props) {
             Use page URL
           </label>
         ) : null}
+        {tool === "ffmpeg" || tool === "yt-dlp" ? (
+          <label className={styles.check} title="Copy the soundtrack only. Never decrypts.">
+            <input type="checkbox" checked={prefs.cliAudioOnly} onChange={(e) => setCli({ cliAudioOnly: e.target.checked })} />
+            Audio only
+          </label>
+        ) : null}
       </div>
 
       {result.ok ? (

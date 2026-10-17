@@ -1,0 +1,48 @@
+﻿# Publishes the static site to GitHub Pages (free zip downloads). Enable Pages: Settings > Pages > GitHub Actions.
+# Set SITE_URL and CONTACT_EMAIL. Leave CHROME_STORE_URL / EDGE_STORE_URL / FIREFOX_STORE_URL empty — those stores charge.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run release
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
+          CHROME_STORE_URL: ${{ vars.CHROME_STORE_URL }}
+          EDGE_STORE_URL: ${{ vars.EDGE_STORE_URL }}
+          FIREFOX_STORE_URL: ${{ vars.FIREFOX_STORE_URL }}
+          STUDIO_KEY: ${{ secrets.STUDIO_KEY }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site-dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.out.outputs.page_url }}
+    steps:
+      - id: out
+        uses: actions/deploy-pages@v4

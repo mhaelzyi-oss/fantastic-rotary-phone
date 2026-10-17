@@ -168,6 +168,7 @@ export function installChromeMock(initialPrefs: Partial<UserPrefs> = {}): { ente
     chrome: {
       runtime: {
         id: "harness",
+        getURL: (path: string) => `/tools/${path.replace(/^tools\//, "")}`,
         sendMessage: async (message: RuntimeMessage) => {
           if (message.type === "SCAN_RESULT") {
             await tabs.rememberScan(TAB_ID, message.payload);
@@ -191,6 +192,10 @@ export function installChromeMock(initialPrefs: Partial<UserPrefs> = {}): { ente
       },
       storage: { local: area(local), session: area(session) },
       tabs: {
+        create: async ({ url }: { url: string }) => {
+          window.open(url, "_blank", "noopener");
+          return { id: 2 };
+        },
         sendMessage: async (tabId: number, message: unknown) => {
           if (tabId !== TAB_ID) throw new Error("No tab with that id.");
           return deliver(contentListeners, message);

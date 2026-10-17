@@ -4,7 +4,8 @@ import styles from "../finder.module.css";
 import { AuthorityDialog } from "./AuthorityDialog";
 import { DownloadBubble } from "./DownloadBubble";
 import { HistoryPanel } from "./HistoryPanel";
-import { BookmarkIcon, ChevronIcon, ClockIcon, DownloadIcon, Logo, PanelIcon, RadioIcon, RefreshIcon, SlidersIcon } from "./icons";
+import { BookmarkIcon, ChevronIcon, ClockIcon, DownloadIcon, Logo, PanelIcon, RadioIcon, RefreshIcon, SlidersIcon, WrenchIcon } from "./icons";
+import { ToolsPanel } from "./ToolsPanel";
 import { Radar } from "./Radar";
 import { SavedPanel } from "./SavedPanel";
 import { StreamList } from "./StreamList";
@@ -40,18 +41,18 @@ export function FinderApp({ layout }: Props) {
   return (
     <div className={`${styles.shell} ${layout === "panel" ? styles.panel : styles.popup}`}>
       <div className={styles.ornaments} aria-hidden="true">
-        <svg className={styles.o1} viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5-11-6.5z" /></svg>
-        <svg className={styles.o2} viewBox="0 0 24 24"><path d="M12 4v11" /><path d="M7 11l5 5 5-5" /><path d="M5 20h14" /></svg>
-        <svg className={styles.o3} viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2" /><path d="M8 6v12M16 6v12" /></svg>
-        <svg className={styles.o4} viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5-11-6.5z" /></svg>
-        <svg className={styles.o5} viewBox="0 0 24 24"><path d="M12 4v11" /><path d="M7 11l5 5 5-5" /><path d="M5 20h14" /></svg>
+        <svg className={styles.o1} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
+        <svg className={styles.o2} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
+        <svg className={styles.o3} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
+        <svg className={styles.o4} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
+        <svg className={styles.o5} viewBox="0 0 96 96"><path d="M48 7 83 27v42L48 89 13 69V27z" /><path d="m35 27 0 42m0-21 27-21M35 48l29 21" /></svg>
       </div>
       <header className={`${styles.glass} ${styles.top}`}>
         <div className={styles.brand}>
-          <Logo size={36} className={styles.logo} />
+          <Logo size={30} className={styles.logo} />
           <div>
             <h1 className={styles.h1}>KUI Video Extractor</h1>
-            <p className={styles.lede}>Krypton Ultimate Inc II</p>
+            <p className={styles.lede}>Find the public file on this page.</p>
           </div>
         </div>
         <div className={styles.headerActions}>
@@ -69,15 +70,16 @@ export function FinderApp({ layout }: Props) {
         </div>
       </header>
 
-      <section className={`${styles.glass} ${styles.card}`} aria-label="Download radar">
+      <section className={`${styles.glass} ${styles.card} ${styles.radarCard}`} aria-label="Download radar">
         <div className={styles.sectionHead}>
-          <h2 className={styles.h3}>Download radar</h2>
+          <h2 className={styles.h3}>{scan.sources.length ? `${scan.sources.length} stream${scan.sources.length === 1 ? "" : "s"}` : "Download radar"}</h2>
           <span className={styles.live}>
             <RadioIcon size={14} className={styles.liveIcon} /> Live
           </span>
         </div>
         <div className={styles.radarBody}>
           <Radar
+            compact={layout === "popup"}
             sources={scan.sources}
             selectedIndex={openIndex}
             onPick={(index) => {
@@ -102,7 +104,7 @@ export function FinderApp({ layout }: Props) {
         ) : null}
       </section>
 
-      <nav className={`${styles.glass} ${styles.tabs}`} role="tablist">
+      <nav className={`${styles.glass} ${styles.tabs}`} role="tablist" aria-label="Sections">
         <button
           type="button"
           role="tab"
@@ -130,10 +132,19 @@ export function FinderApp({ layout }: Props) {
         >
           <ClockIcon size={14} /> History
         </button>
+        <button
+          type="button"
+          role="tab"
+          className={tab === "tools" ? `${styles.tab} ${styles.tabOn}` : styles.tab}
+          aria-selected={tab === "tools"}
+          onClick={() => setTab("tools")}
+        >
+          <WrenchIcon size={14} /> Tools
+        </button>
       </nav>
 
       <section className={`${styles.glass} ${styles.cardTight}`}>
-        {tab === "streams" ? <StreamList /> : tab === "saved" ? <SavedPanel /> : <HistoryPanel />}
+        {tab === "streams" ? <StreamList /> : tab === "saved" ? <SavedPanel /> : tab === "history" ? <HistoryPanel /> : <ToolsPanel compact={layout === "popup"} />}
       </section>
       <details className={`${styles.glass} ${styles.output}`}>
         <summary className={styles.summary}>
@@ -173,7 +184,7 @@ export function FinderApp({ layout }: Props) {
       </details>
       <DownloadBubble />
       <AuthorityDialog />
-      <p className={styles.footer}>Detect · Analyze · Quality · Library · Names · Extractor</p>
+      <p className={styles.footer}>Krypton Ultimate Inc II</p>
     </div>
   );
 }

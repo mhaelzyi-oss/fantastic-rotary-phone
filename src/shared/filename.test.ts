@@ -4,10 +4,10 @@ import { formatFilename, formatYmd, lintFilenameTemplate } from "./filename";
 describe("formatFilename", () => {
   const now = new Date("2026-09-06T12:00:00Z");
 
-  it("uses the default {title}_{YYYYMMDD}_{quality}.mp4 pattern", () => {
+  it("uses the default {title}_{host}_{YYYYMMDD}_{quality}.mp4 pattern", () => {
     expect(
-      formatFilename({ title: "Flower Demo", quality: "1080p", now, prompt: "{title}_{YYYYMMDD}_{quality}.mp4" }),
-    ).toBe("Flower_Demo_20260906_1080p.mp4");
+      formatFilename({ title: "Flower Demo", quality: "1080p", now, host: "example.com" }),
+    ).toBe("Flower_Demo_example.com_20260906_1080p.mp4");
   });
 
   it("applies short and nodate prompt words", () => {
@@ -22,7 +22,7 @@ describe("formatFilename", () => {
   });
 
   it("strips illegal path characters", () => {
-    expect(formatFilename({ title: "a/b:c", quality: "480p", now })).toBe("abc_20260906_480p.mp4");
+    expect(formatFilename({ title: "a/b:c", quality: "480p", now })).toBe("abc_web_20260906_480p.mp4");
   });
 
   it("fills {host} {index} {ext}", () => {
@@ -42,7 +42,7 @@ describe("formatFilename", () => {
 
 describe("lintFilenameTemplate", () => {
   it("accepts the default and the documented tokens", () => {
-    expect(lintFilenameTemplate("{title}_{YYYYMMDD}_{quality}.mp4")).toEqual([]);
+    expect(lintFilenameTemplate("{title}_{host}_{YYYYMMDD}_{quality}.mp4")).toEqual([]);
     expect(lintFilenameTemplate("{title}_{host}_{index}.{ext} short nodate")).toEqual([]);
   });
 

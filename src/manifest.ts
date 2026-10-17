@@ -3,6 +3,7 @@ import { defineManifest } from "@crxjs/vite-plugin";
 export default defineManifest({
   manifest_version: 3,
   name: "KUI Video Extractor",
+  short_name: "KUI Extractor",
   version: "1.2.0",
   options_page: "src/ui/options/index.html",
   description: "Extract the public video file from the page.",
@@ -10,7 +11,7 @@ export default defineManifest({
     16: "icons/logo-idle-16.png",
     32: "icons/logo-idle-32.png",
     48: "icons/logo-idle-48.png",
-    128: "icons/logo-found-128.png",
+    128: "icons/logo-idle-128.png",
   },
   side_panel: {
     default_path: "src/ui/sidepanel/index.html",
@@ -47,5 +48,4 @@ export default defineManifest({
     extension_pages: "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
   },
   permissions: ["activeTab", "alarms", "contextMenus", "downloads", "storage", "scripting", "notifications", "sidePanel"],
-  optional_host_permissions: ["http://*/*", "https://*/*"],
 });

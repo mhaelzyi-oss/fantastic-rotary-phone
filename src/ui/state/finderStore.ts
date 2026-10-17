@@ -19,7 +19,7 @@ import {
 import { sendMessage } from "../lib/messaging";
 import { streamName } from "../lib/streamName";
 
-export type FinderTab = "streams" | "saved" | "history";
+export type FinderTab = "streams" | "saved" | "history" | "tools";
 export type Authority = { basis: string; confirmed: boolean };
 
 type FinderState = {
@@ -54,7 +54,7 @@ type FinderState = {
   variantFor: (index: number) => Variant | undefined;
   filenameFor: (index: number) => string;
   cliInputFor: (index: number) => CliInput | undefined;
-  setCli: (patch: Partial<Pick<UserPrefs, "cliTool" | "cliShell" | "cliReferer" | "cliUserAgent" | "cliYtdlpPage">>) => void;
+  setCli: (patch: Partial<Pick<UserPrefs, "cliTool" | "cliShell" | "cliReferer" | "cliUserAgent" | "cliYtdlpPage" | "cliAudioOnly">>) => void;
   queueDownload: (index: number) => Promise<void>;
   confirmAuthority: (basis: string) => Promise<void>;
   cancelAuthority: () => void;
@@ -271,6 +271,7 @@ export const useFinderStore = create<FinderState>((set, get) => ({
       pageUrl: source.pageUrl,
       maxHeight: prefs.maxHeight === "auto" ? undefined : Number(prefs.maxHeight),
       subtitles: prefs.includeSubtitles,
+      audioOnly: prefs.cliAudioOnly,
     };
   },
   setCli: (patch) => {

@@ -108,6 +108,8 @@ export type UserPrefs = {
   cliUserAgent: boolean;
   /** yt-dlp only: pass the page URL so yt-dlp's own extractors resolve the media. */
   cliYtdlpPage: boolean;
+  /** ffmpeg / yt-dlp: copy the soundtrack only (no DRM, no re-encode keys). */
+  cliAudioOnly: boolean;
   prompt: string;
   includeSubtitles: boolean;
   preferredQuality: "auto" | "2160" | "1080" | "720" | "480";
@@ -176,13 +178,14 @@ export type Diagnostic = {
   host?: string;
 };
 
-export const DEFAULT_PROMPT = "{title}_{YYYYMMDD}_{quality}.mp4";
+export const DEFAULT_PROMPT = "{title}_{host}_{YYYYMMDD}_{quality}.mp4";
 
 export const DEFAULT_PREFS: UserPrefs = {
   cliTool: "yt-dlp",
   cliShell: "auto",
   cliReferer: true,
   cliYtdlpPage: false,
+  cliAudioOnly: false,
   cliUserAgent: false,
   prompt: DEFAULT_PROMPT,
   includeSubtitles: false,

@@ -1,10 +1,10 @@
 # KUI Video Extractor
 
-![Krypton Ultimate Inc II](branding/krypton-ultimate-inc-ii.svg)
+Find the public file on this page.
 
-Extract the public video file from the page you are watching. Publisher: **Krypton Ultimate Inc II**.
+Local tools — Convert, Compress, Trim, Merge, GIF, Audio, Add Music — read files you pick. Nothing is uploaded.
 
-Tools: **Detect**, **Analyze**, **Quality**, **Library**, **Names**, plus this **Extractor** extension.
+MIT. Public downloads are free zip files on GitHub Pages. Chrome Web Store and Microsoft Store listings are not used.
 
 ## Install
 
@@ -13,11 +13,8 @@ npm install
 npm run build
 ```
 
-Load unpacked from `dist` (Chrome, Edge, Brave). Firefox build is `dist-firefox`.
+Chrome / Edge / Brave: unzip the site download, then Load unpacked.
 
-## Develop
+Firefox: `npm run build:firefox`, then Load Temporary Add-on → `dist-firefox/manifest.json`.
 
-```bash
-npm test
-npm run demo
-```
+Site: `npm run build:site`. Tools open on the site, in the extension Tools tab, or from a zip.

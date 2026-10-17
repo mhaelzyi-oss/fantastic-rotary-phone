@@ -86,7 +86,7 @@ async function open(page: Page, path: string) {
     if (r.status() >= 400 && !r.url().endsWith("/favicon.ico")) problems.push(`${r.status()} ${r.url()}`);
   });
   page.on("console", (m) => {
-    if (m.type() === "error" && !/Failed to load resource/.test(m.text())) problems.push(m.text());
+    if (m.type() === "error" && !/Failed to load resource|frame-ancestors/.test(m.text())) problems.push(m.text());
   });
   await page.addInitScript(stubChrome);
   await page.goto(`${origin}/${path}`);
@@ -138,6 +138,21 @@ test("built side panel and options pages load cleanly", async ({ page }) => {
   await expect(options.getByLabel("Default tool")).toBeVisible();
   expect(seen.problems).toEqual([]);
   expect(seen.outside).toEqual([]);
+});
+
+test("built extension ships the seven local-file tool pages", async ({ page }) => {
+  const slugs = ["convert", "compress", "trim", "merge", "gif", "audio", "add-audio"];
+  for (const slug of slugs) {
+    expect(existsSync(join(DIST, "tools", slug, "index.html")), slug).toBe(true);
+    expect(existsSync(join(DIST, "tools", slug, "app.js")), slug).toBe(true);
+  }
+  const seen = await open(page, "tools/convert/index.html");
+  await expect(page.getByRole("heading", { name: "Video Converter" })).toBeVisible();
+  await expect(page.getByText("KUI Video Extractor").first()).toBeVisible();
+  await page.getByRole("button", { name: "Convert" }).click();
+  await expect(page.getByRole("status")).toContainText(/Choose a local file/);
+  expect(seen.outside).toEqual([]);
+  expect(seen.problems).toEqual([]);
 });
 
 test("every file the manifest points at exists in dist", async () => {

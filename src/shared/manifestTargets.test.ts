@@ -30,6 +30,7 @@ describe("toFirefoxManifest", () => {
   it("declares an id and says no data is collected", () => {
     expect(ff.browser_specific_settings.gecko.id).toBe(FIREFOX_ID);
     expect(ff.browser_specific_settings.gecko.data_collection_permissions).toEqual({ required: ["none"] });
+    expect(ff.browser_specific_settings.gecko_android).toBeUndefined();
   });
 
   it("does not change the input", () => {

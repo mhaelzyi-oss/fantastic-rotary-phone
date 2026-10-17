@@ -35,7 +35,7 @@ import {
   savePrefs,
   updateLibrary,
 } from "./storage";
-import { cachedScan, forgetAllScans, forgetTab, rememberScan, requestScan } from "./tabs";
+import { activePageTab, cachedScan, forgetAllScans, forgetTab, rememberScan, requestScan } from "./tabs";
 
 async function migrate(): Promise<void> {
   const keys = { prefs: PREFS_KEY, history: HISTORY_KEY, queue: QUEUE_KEY, library: LIBRARY_KEY, schema: SCHEMA_KEY };
@@ -112,7 +112,7 @@ chrome.runtime.onMessage.addListener((raw: unknown, sender, sendResponse) => {
   }
 
   if (raw.type === "GET_SCAN") {
-    chrome.tabs.query({ active: true, currentWindow: true }).then(async ([tab]) => {
+    void activePageTab().then(async (tab) => {
       if (!tab?.id) {
         sendResponse({ pageUrl: "", pageTitle: "", sources: [] } satisfies ScanPayload);
         return;
@@ -130,10 +130,10 @@ chrome.runtime.onMessage.addListener((raw: unknown, sender, sendResponse) => {
   }
 
   if (raw.type === "RESAN") {
-    chrome.tabs.query({ active: true, currentWindow: true }).then(async ([tab]) => {
+    void activePageTab().then(async (tab) => {
       if (!tab?.id) return;
       const prefs = await loadPrefs();
-      chrome.tabs.sendMessage(tab.id, { type: "SCAN_PAGE", prefs } satisfies RuntimeMessage).catch(() => undefined);
+      await requestScan(tab.id, prefs, contentPath);
     });
     return false;
   }
@@ -175,7 +175,7 @@ chrome.runtime.onMessage.addListener((raw: unknown, sender, sendResponse) => {
   }
 
   if (raw.type === "OPEN_SIDEPANEL") {
-    chrome.tabs.query({ active: true, currentWindow: true }).then(([tab]) => {
+    void activePageTab().then((tab) => {
       if (tab?.windowId != null) void chrome.sidePanel?.open({ windowId: tab.windowId });
     });
     return false;

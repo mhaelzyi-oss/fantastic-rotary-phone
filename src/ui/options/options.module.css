@@ -1,4 +1,5 @@
 .page {
+  position: relative;
   display: grid;
   gap: 14px;
   max-width: 680px;
@@ -6,6 +7,31 @@
   padding: 28px 16px 48px;
   color: var(--fg);
 }
+
+.page > :not(.ornaments) {
+  position: relative;
+  z-index: 1;
+}
+
+.ornaments {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ornaments svg {
+  position: absolute;
+  fill: none;
+  stroke: #c9a227;
+  stroke-width: 1.4;
+  opacity: 0.16;
+}
+
+.o1 { top: 12%; left: 6%; width: 36px; }
+.o2 { top: 18%; right: 8%; width: 28px; }
+.o3 { bottom: 16%; left: 18%; width: 22px; }
 
 .glass {
   background: var(--glass);
@@ -23,10 +49,30 @@
   padding: 14px 16px;
 }
 
+.pulse {
+  display: flex;
+  gap: 28px;
+  padding: 14px 20px;
+}
+
+.pulse b {
+  display: block;
+  font-size: 1.45rem;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.pulse span {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-fg);
+}
+
 .logo {
   flex: none;
   display: block;
-  filter: drop-shadow(0 6px 10px rgb(0 0 0 / 22%));
 }
 
 .h1 {
@@ -129,5 +175,5 @@
   color: var(--btn-primary-fg);
   font-size: 14px;
   font-weight: 600;
-  box-shadow: 0 6px 16px -8px rgb(0 0 0 / 55%);
+  box-shadow: 0 10px 24px -10px rgb(201 162 39 / 70%);
 }

@@ -1,5 +1,5 @@
 import type { CliShell, CliTool, VideoKind } from "./types";
-import { hostLooksDrm } from "./url";
+import { hostLooksDrm, mediaMedium } from "./url";
 
 export type { CliShell, CliTool } from "./types";
 
@@ -68,6 +68,8 @@ export type CliInput = {
   pageUrl?: string;
   maxHeight?: number;
   subtitles?: boolean;
+  /** ffmpeg / yt-dlp: soundtrack only. Never decrypts. */
+  audioOnly?: boolean;
 };
 
 export type CliResult = { ok: true; command: string } | { ok: false; reason: string };
@@ -157,6 +159,13 @@ export function buildCliCommand(input: CliInput): CliResult {
     }
   }
 
+  if (input.audioOnly && (input.tool === "streamlink" || input.tool === "n-m3u8dl-re")) {
+    return { ok: false, reason: "This tool cannot extract audio. Use ffmpeg or yt-dlp." };
+  }
+  if (input.audioOnly && (input.tool === "curl" || input.tool === "wget" || input.tool === "aria2c") && mediaMedium(url) !== "audio") {
+    return { ok: false, reason: "This tool downloads the file as-is. Use ffmpeg or yt-dlp to extract audio from video." };
+  }
+
   const referer = input.referer ? cleanUrl(input.referer) : null;
   const ua = input.userAgent ? cleanText(input.userAgent) : "";
   const file = safeFilename(input.filename);
@@ -172,31 +181,42 @@ export function buildCliCommand(input: CliInput): CliResult {
       args = [
         "--no-playlist",
         // Best video+audio up to the cap, else the best single file. Only for page mode; a stream URL is already one choice.
-        ...(pageTarget && cap ? ["-f", `bv*[height<=${cap}]+ba/b[height<=${cap}]/b`] : []),
-        "--merge-output-format",
-        "mp4",
-        ...(pageTarget && input.subtitles ? ["--write-subs", "--sub-langs", "all"] : []),
+        ...(pageTarget && cap && !input.audioOnly ? ["-f", `bv*[height<=${cap}]+ba/b[height<=${cap}]/b`] : []),
+        ...(input.audioOnly ? ["-x", "--audio-format", "m4a"] : ["--merge-output-format", "mp4"]),
+        ...(pageTarget && input.subtitles && !input.audioOnly ? ["--write-subs", "--sub-langs", "all"] : []),
         ...(referer && !pageTarget ? ["--referer", referer] : []),
         ...(ua ? ["--user-agent", ua] : []),
         "-o",
-        withExt(file, "mp4"),
+        withExt(file, input.audioOnly ? "m4a" : "mp4"),
         pageTarget ?? url,
       ];
       break;
     }
     case "ffmpeg":
       bin = "ffmpeg";
-      args = [
-        "-hide_banner",
-        ...(referer ? ["-referer", referer] : []),
-        ...(ua ? ["-user_agent", ua] : []),
-        "-i",
-        url,
-        "-c",
-        "copy",
-        ...(input.kind === "hls" ? ["-bsf:a", "aac_adtstoasc"] : []),
-        withExt(file, "mp4"),
-      ];
+      args = input.audioOnly
+        ? [
+            "-hide_banner",
+            ...(referer ? ["-referer", referer] : []),
+            ...(ua ? ["-user_agent", ua] : []),
+            "-i",
+            url,
+            "-vn",
+            "-c:a",
+            "copy",
+            withExt(file, "m4a"),
+          ]
+        : [
+            "-hide_banner",
+            ...(referer ? ["-referer", referer] : []),
+            ...(ua ? ["-user_agent", ua] : []),
+            "-i",
+            url,
+            "-c",
+            "copy",
+            ...(input.kind === "hls" ? ["-bsf:a", "aac_adtstoasc"] : []),
+            withExt(file, "mp4"),
+          ];
       break;
     case "streamlink":
       bin = "streamlink";
@@ -232,7 +252,7 @@ export function buildCliCommand(input: CliInput): CliResult {
         ...(referer ? ["-e", referer] : []),
         ...(ua ? ["-A", ua] : []),
         "-o",
-        withExt(file, "mp4"),
+        withExt(file, input.audioOnly ? "m4a" : "mp4"),
         url,
       ];
       break;
@@ -243,7 +263,7 @@ export function buildCliCommand(input: CliInput): CliResult {
         ...(referer ? [`--referer=${referer}`] : []),
         ...(ua ? [`--user-agent=${ua}`] : []),
         "-O",
-        withExt(file, "mp4"),
+        withExt(file, input.audioOnly ? "m4a" : "mp4"),
         url,
       ];
       break;
@@ -259,7 +279,7 @@ export function buildCliCommand(input: CliInput): CliResult {
         ...(referer ? [`--referer=${referer}`] : []),
         ...(ua ? [`--user-agent=${ua}`] : []),
         "-o",
-        withExt(file, "mp4"),
+        withExt(file, input.audioOnly ? "m4a" : "mp4"),
         url,
       ];
       break;

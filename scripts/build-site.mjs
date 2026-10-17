@@ -11,6 +11,8 @@ const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const VERSION = pkg.version;
 const SITE_URL = (process.env.SITE_URL ?? "https://kui.video").replace(/\/$/, "");
+const SITE = new URL(SITE_URL + "/");
+const BASE = SITE.pathname.replace(/\/$/, "");
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL ?? "kryptonsixxoutkook@gmail.com";
 const STUDIO_KEY = process.env.STUDIO_KEY ?? "";
 const STUDIO_HASH = STUDIO_KEY ? createHash("sha256").update(STUDIO_KEY).digest("hex") : "";
@@ -95,7 +97,7 @@ function card(d, title, steps) {
   if (!d) return `<div class="card"><h3>${title}</h3><p class="muted">Build not present.</p></div>`;
   return `<div class="card">
             <h3>${title}</h3>
-            <p><a class="btn btn-dark small" href="/downloads/${d.file}" download>Download ${d.file}</a></p>
+            <p><a class="btn btn-dark small" href="${BASE}/downloads/${d.file}" download>Download ${d.file}</a></p>
             <p class="hash">SHA-256 ${d.hash}<br />${fmtSize(d.size)} &middot; v${VERSION}</p>
             <ol>${steps.map((s) => `<li>${s}</li>`).join("")}</ol>
           </div>`;
@@ -119,11 +121,12 @@ function stamp(html) {
     .replaceAll("{{FOOTER}}", footer)
     .replaceAll("{{VERSION}}", VERSION)
     .replaceAll("{{SITE_URL}}", SITE_URL)
+    .replaceAll("{{BASE}}", BASE)
     .replaceAll("{{CONTACT_EMAIL}}", CONTACT_EMAIL)
     .replaceAll("{{BUILD_DATE}}", BUILD_DATE)
     .replaceAll("{{BADGES}}", badges)
     .replaceAll("{{DOWNLOADS}}", downloadCards)
-    .replaceAll("{{TOOLS}}", toolsMarkup(VERSION))
+    .replaceAll("{{TOOLS}}", toolsMarkup(VERSION, BASE))
     .replaceAll("{{STUDIO_HASH}}", STUDIO_HASH);
 }
 
@@ -157,11 +160,11 @@ for (const tool of webTools) {
   let html = readFileSync(destPath, "utf8");
   html = html.replace(
     "</head>",
-    `    <link rel="stylesheet" href="/style.css" />\n    <link rel="canonical" href="${SITE_URL}/tools/${tool.slug}/" />\n  </head>`,
+    `    <link rel="stylesheet" href="${BASE}/style.css" />\n    <link rel="canonical" href="${SITE_URL}/tools/${tool.slug}/" />\n  </head>`,
   );
-  const bar = `<p class="tool-chrome wrap"><a class="btn btn-ghost small" href="/#tools">All tools</a><a class="btn btn-dark small" href="/downloads/${zipName(tool.slug, VERSION)}" download data-kui-zip>Download zip</a></p>`;
+  const bar = `<p class="tool-chrome wrap"><a class="btn btn-ghost small" href="${BASE}/#tools">All tools</a><a class="btn btn-dark small" href="${BASE}/downloads/${zipName(tool.slug, VERSION)}" download data-kui-zip>Download zip</a></p>`;
   html = html.replace("<body>", `<body>\n    ${header}\n    ${bar}`);
-  html = html.replace("</body>", `    ${footer}\n    <script src="/studio/pulse.js"></script>\n  </body>`);
+  html = html.replace("</body>", `    ${footer}\n    <script src="${BASE}/studio/pulse.js"></script>\n  </body>`);
   html = stamp(html);
   html = html.replace(
     /Content-Security-Policy" content="[^"]+"/,
@@ -175,7 +178,7 @@ writeFileSync(join(out, "studio", "index.html"), stamp(readFileSync(join(root, "
 copyFileSync(join(root, "site", "studio", "studio.js"), join(out, "studio", "studio.js"));
 copyFileSync(join(root, "site", "studio", "pulse.js"), join(out, "studio", "pulse.js"));
 
-copyFileSync(join(root, "site", "style.css"), join(out, "style.css"));
+writeFileSync(join(out, "style.css"), stamp(readFileSync(join(root, "site", "style.css"), "utf8")));
 const siteMark = join(root, "public", "icons", "logo.svg");
 copyFileSync(existsSync(siteMark) ? siteMark : join(root, "branding", "krypton-ultimate-inc-ii.svg"), join(out, "logo.svg"));
 copyFileSync(join(root, "branding", "krypton-ultimate-inc-ii.svg"), join(out, "publisher.svg"));
@@ -198,8 +201,8 @@ writeFileSync(
   join(out, "robots.txt"),
   `User-agent: *
 Allow: /
-Disallow: /studio
-Disallow: /store-listings.md
+Disallow: ${BASE}/studio
+Disallow: ${BASE}/store-listings.md
 Sitemap: ${SITE_URL}/sitemap.xml
 `,
 );
@@ -292,6 +295,8 @@ Security: ${SITE_URL}/security.html
 `,
 );
 
-writeFileSync(join(out, "CNAME"), new URL(SITE_URL).host + "\n");
+if (!SITE.hostname.endsWith("github.io")) {
+  writeFileSync(join(out, "CNAME"), SITE.hostname + "\n");
+}
 
 console.log(`site-dist/  v${VERSION}  ${downloads.map((d) => d.file).join(", ")}`);

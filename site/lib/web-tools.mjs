@@ -83,21 +83,21 @@ function extractorCard() {
           </article>`;
 }
 
-function webToolCard(tool, version) {
+function webToolCard(tool, version, base = "") {
   const zip = zipName(tool.slug, version);
   return `<article class="tool glass" id="tool-${tool.slug}">
             <p class="tool-kicker">${esc(tool.kicker)}</p>
             <h3>${esc(tool.name)}</h3>
             <p class="muted">${esc(tool.summary)}</p>
             <p class="tool-actions">
-              <a class="btn btn-blue small" href="/tools/${tool.slug}/">Open</a>
-              <a class="btn btn-ghost small" href="/downloads/${zip}" download data-kui-zip>Download zip</a>
+              <a class="btn btn-blue small" href="${base}/tools/${tool.slug}/">Open</a>
+              <a class="btn btn-ghost small" href="${base}/downloads/${zip}" download data-kui-zip>Download zip</a>
             </p>
           </article>`;
 }
 
-export function toolsMarkup(version) {
+export function toolsMarkup(version, base = "") {
   if (!version) throw new Error("toolsMarkup needs the package version");
   return `<div class="tools-feature">${extractorCard()}</div>
-          <div class="tools-grid">${webTools.map((t) => webToolCard(t, version)).join("")}</div>`;
+          <div class="tools-grid">${webTools.map((t) => webToolCard(t, version, base)).join("")}</div>`;
 }

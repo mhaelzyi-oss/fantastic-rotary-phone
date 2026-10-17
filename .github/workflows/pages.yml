@@ -1,5 +1,5 @@
-﻿# Publishes the static site to GitHub Pages. Enable Pages for this repo (Settings > Pages > GitHub Actions).
-# Set repository variables SITE_URL and CONTACT_EMAIL, and (when ready) CHROME_STORE_URL, EDGE_STORE_URL, FIREFOX_STORE_URL.
+﻿# Publishes the static site to GitHub Pages (free zip downloads). Enable Pages: Settings > Pages > GitHub Actions.
+# Set SITE_URL and CONTACT_EMAIL. Leave CHROME_STORE_URL / EDGE_STORE_URL / FIREFOX_STORE_URL empty — those stores charge.
 name: Pages
 
 on:

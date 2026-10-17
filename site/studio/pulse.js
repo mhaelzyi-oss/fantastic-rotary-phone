@@ -22,9 +22,15 @@
     }
   }
 
+  var ROOT = (function () {
+    var el = document.currentScript;
+    if (!el || !el.src) return "";
+    return el.src.replace(/\/studio\/[^/?#]+(?:[?#].*)?$/, "");
+  })();
+
   function ping(body) {
     try {
-      fetch("/studio/hit", { method: "POST", keepalive: true, body: body, mode: "same-origin" }).catch(function () {
+      fetch(ROOT + "/studio/hit", { method: "POST", keepalive: true, body: body, mode: "same-origin" }).catch(function () {
         /* no worker */
       });
     } catch {

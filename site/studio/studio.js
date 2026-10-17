@@ -44,6 +44,12 @@
     status.textContent = msg;
   }
 
+  var ROOT = (function () {
+    var el = document.currentScript;
+    if (!el || !el.src) return "";
+    return el.src.replace(/\/studio\/[^/?#]+(?:[?#].*)?$/, "");
+  })();
+
   if (!hash) {
     fail("Set STUDIO_KEY when building the site.");
     gate.hidden = true;
@@ -59,7 +65,7 @@
         return;
       }
       status.hidden = true;
-      fetch("/studio/stats", { headers: { "X-Kui-Key": key } })
+      fetch(ROOT + "/studio/stats", { headers: { "X-Kui-Key": key } })
         .then(function (res) {
           if (!res.ok) throw new Error("local");
           return res.json();

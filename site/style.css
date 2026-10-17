@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Instrument Sans";
-  src: url("/fonts/instrument-sans-latin.woff2") format("woff2");
+  src: url("{{BASE}}/fonts/instrument-sans-latin.woff2") format("woff2");
   font-weight: 400 700;
   font-display: swap;
 }

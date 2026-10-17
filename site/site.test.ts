@@ -15,13 +15,13 @@ describe.skipIf(skip)("published site", () => {
       expect(page, name).not.toMatch(/\son[a-z]+\s*=/i);
       expect(page, name).not.toMatch(/<(?:iframe|object|embed|link rel="preconnect"|img[^>]+src="https?:)/i);
       expect(page, name).not.toMatch(/src="https?:\/\//i);
-      expect(page, name).not.toMatch(/href="https?:\/\/(?!kui\.video)[^"]+"/i);
+      expect(page, name).not.toMatch(/href="https?:\/\/(?!kui\.video|mhaelzyi-oss\.github\.io)[^"]+"/i);
       expect(page, name).not.toMatch(/\{\{[A-Z_]+\}\}/);
       expect(page, name).toMatch(/Content-Security-Policy/);
     }
     const home = html("index.html");
     expect(home.match(/<script[\s>]/gi) ?? []).toHaveLength(1);
-    expect(home).toContain('src="/studio/pulse.js"');
+    expect(home).toMatch(/src="(?:\/fantastic-rotary-phone)?\/studio\/pulse\.js"/);
     expect(html("privacy.html")).not.toMatch(/<script[\s>]/i);
   });
 
@@ -58,7 +58,7 @@ describe.skipIf(skip)("published site", () => {
     expect(txt).toMatch(/^Contact: mailto:/m);
     expect(txt).toMatch(/^Expires: /m);
     const robots = readFileSync(join(dist, "robots.txt"), "utf8");
-    expect(robots).toMatch(/Disallow: \/studio/);
+    expect(robots).toMatch(/Disallow: (?:\/fantastic-rotary-phone)?\/studio/);
     expect(existsSync(join(dist, "studio", "index.html"))).toBe(true);
   });
 
@@ -73,9 +73,9 @@ describe.skipIf(skip)("published site", () => {
     }
   });
 
-  it("is a short page for kui.video, with the newsletter and no lecture copy", () => {
+  it("is a short page for the public site, with the newsletter and no lecture copy", () => {
     const home = html("index.html");
-    expect(home).toMatch(/https:\/\/kui\.video\//);
+    expect(home).toMatch(/https:\/\/(?:kui\.video|mhaelzyi-oss\.github\.io\/fantastic-rotary-phone)\//);
     expect(home).toMatch(/Stay in the loop/);
     expect(home).toMatch(/This opens your email app\./);
     expect(home).not.toMatch(/>kryptonsixxoutkook@gmail\.com</);
@@ -114,11 +114,12 @@ describe.skipIf(skip)("published site", () => {
   it("bundles its own font and logo, so it never fetches them from elsewhere", () => {
     expect(existsSync(join(dist, "logo.svg"))).toBe(true);
     expect(existsSync(join(dist, "publisher.svg"))).toBe(true);
-    expect(html("index.html")).toMatch(/src="\/publisher\.svg"/);
+    expect(html("index.html")).toMatch(/src="(?:\/fantastic-rotary-phone)?\/publisher\.svg"/);
     expect(html("index.html")).not.toMatch(/class="store off"/);
     expect(existsSync(join(dist, "fonts", "instrument-sans-latin.woff2"))).toBe(true);
     const css = readFileSync(join(dist, "style.css"), "utf8");
-    expect(css).toMatch(/url\("\/fonts\/instrument-sans-latin\.woff2"\)/);
+    expect(css).toMatch(/url\("(?:\/fantastic-rotary-phone)?\/fonts\/instrument-sans-latin\.woff2"\)/);
+    expect(css).not.toMatch(/\{\{[A-Z_]+\}\}/);
     expect(css).not.toMatch(/url\(\s*["']?https?:\/\//);
   });
 });

@@ -50,6 +50,9 @@ describe("web tools catalog", () => {
     }
     expect(html.match(/id="tool-[a-z0-9-]+"/g)).toHaveLength(8);
     expect(html).not.toMatch(/type="module"|<script/i);
+    const nested = toolsMarkup("1.2.0", "/fantastic-rotary-phone");
+    expect(nested).toContain("/fantastic-rotary-phone/tools/convert/");
+    expect(nested).toContain("/fantastic-rotary-phone/downloads/kui-tool-convert-1.2.0.zip");
   });
 
   it("names zips kui-tool-<slug>-VERSION.zip", () => {

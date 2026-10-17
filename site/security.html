@@ -45,6 +45,7 @@
         <li>Static files only: no server code, no database, no login, nothing to inject into.</li>
         <li>A strict content security policy that allows no scripts at all, plus <code>frame-ancestors 'none'</code>, no referrer, no MIME sniffing and a locked-down permissions policy.</li>
         <li>Served over HTTPS only. No third-party requests of any kind.</li>
+        <li>The local file tools are separate downloads. They run from a file you unzipped, with <code>connect-src 'none'</code>, and they only read files you pick.</li>
       </ul>
 
       <h2>What it does not protect against</h2>

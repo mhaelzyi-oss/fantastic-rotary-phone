@@ -231,6 +231,28 @@ describe("buildCliCommand", () => {
     }
   });
 
+  it("extracts audio with ffmpeg or yt-dlp and still refuses DRM", () => {
+    const ff = buildCliCommand({ ...base, tool: "ffmpeg", shell: "bash", kind: "hls", audioOnly: true });
+    expect(ff.ok && ff.command).toMatch(/ffmpeg /);
+    expect(ff.ok && ff.command).toMatch(/-vn/);
+    expect(ff.ok && ff.command).toMatch(/-c:a copy/);
+    expect(ff.ok && ff.command).toMatch(/\.m4a/);
+    const ytdlp = buildCliCommand({ ...base, tool: "yt-dlp", shell: "bash", kind: "hls", audioOnly: true });
+    expect(ytdlp.ok && ytdlp.command).toMatch(/-x --audio-format m4a/);
+    expect(ytdlp.ok && ytdlp.command).not.toMatch(/decrypt|--key\b/i);
+    expect(buildCliCommand({ ...base, tool: "ffmpeg", shell: "bash", kind: "hls", audioOnly: true, encrypted: true }).ok).toBe(false);
+    expect(buildCliCommand({ ...base, tool: "curl", shell: "bash", kind: "progressive", audioOnly: true }).ok).toBe(false);
+    const audioFile = buildCliCommand({
+      ...base,
+      url: "https://cdn.example.com/talk.mp3",
+      tool: "curl",
+      shell: "bash",
+      kind: "progressive",
+      audioOnly: true,
+    });
+    expect(audioFile.ok && audioFile.command).toMatch(/talk\.mp3|\.m4a/);
+  });
+
   it("never emits a DRM-bypass or decryption flag", () => {
     const banned = /--key\b|--allow-unplayable|--use-shaka|--decryption|--cdm|widevine|playready|fairplay|--enable-drm|decrypt/i;
     for (const tool of CLI_TOOLS) {

@@ -1,0 +1,78 @@
+export type WebTool = {
+  slug: string;
+  name: string;
+  short: string;
+  kicker: string;
+  summary: string;
+};
+
+/** Same lineup as site/lib/web-tools.mjs — keep the two lists in lockstep. */
+export const webTools: WebTool[] = [
+  {
+    slug: "convert",
+    name: "Video Converter",
+    short: "Converter",
+    kicker: "Remux",
+    summary: "Wrap a local video as a clean MP4. Same codec. No upload.",
+  },
+  {
+    slug: "compress",
+    name: "Video Compressor",
+    short: "Compressor",
+    kicker: "Smaller file",
+    summary: "Re-encode a local video to a smaller file in this browser.",
+  },
+  {
+    slug: "trim",
+    name: "Video Trimmer",
+    short: "Trimmer",
+    kicker: "Cut",
+    summary: "Keep a time range from a local video.",
+  },
+  {
+    slug: "merge",
+    name: "Video Merger",
+    short: "Merger",
+    kicker: "Join",
+    summary: "Join local clips with matching codecs into one file.",
+  },
+  {
+    slug: "gif",
+    name: "Video to GIF",
+    short: "GIF",
+    kicker: "Animated",
+    summary: "Turn a local clip into a GIF.",
+  },
+  {
+    slug: "audio",
+    name: "Audio Extractor",
+    short: "Audio",
+    kicker: "Soundtrack",
+    summary: "Pull the audio track from a local video.",
+  },
+  {
+    slug: "add-audio",
+    name: "Add Music",
+    short: "Music",
+    kicker: "Mux",
+    summary: "Add a local audio file onto a local video.",
+  },
+];
+
+export function toolPagePath(slug: string): string {
+  return `tools/${slug}/index.html`;
+}
+
+export function toolPageUrl(slug: string): string {
+  if (typeof chrome !== "undefined" && chrome.runtime?.getURL) return chrome.runtime.getURL(toolPagePath(slug));
+  return `/${toolPagePath(slug)}`;
+}
+
+export function openToolPage(slug: string): void {
+  const url = toolPageUrl(slug);
+  if (typeof chrome !== "undefined" && chrome.tabs?.create) {
+    void chrome.tabs.create({ url });
+    return;
+  }
+  window.open(url, "_blank", "noopener");
+}

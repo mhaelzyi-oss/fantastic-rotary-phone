@@ -3,6 +3,7 @@ import { defineManifest } from "@crxjs/vite-plugin";
 export default defineManifest({
   manifest_version: 3,
   name: "KUI Video Extractor",
+  short_name: "KUI Extractor",
   version: "1.2.0",
   options_page: "src/ui/options/index.html",
   description: "Extract the public video file from the page.",

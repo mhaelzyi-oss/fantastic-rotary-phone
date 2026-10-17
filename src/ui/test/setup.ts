@@ -19,11 +19,13 @@ Object.assign(globalThis, {
   chrome: {
     runtime: {
       sendMessage,
+      getURL: (path: string) => `chrome-extension://test/${path}`,
       onMessage: {
         addListener: (fn: (message: unknown) => void) => listeners.add(fn),
         removeListener: (fn: (message: unknown) => void) => listeners.delete(fn),
       },
     },
+    tabs: { create: vi.fn(async () => ({ id: 2 })) },
   },
 });
 

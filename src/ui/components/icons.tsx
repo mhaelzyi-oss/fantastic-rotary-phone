@@ -131,6 +131,12 @@ export const BookmarkIcon = (p: IconProps) => (
   </Icon>
 );
 
+export const WrenchIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M14.7 6.3a4.1 4.1 0 0 0-5.8 5.8L3 18l3 3 5.9-5.9a4.1 4.1 0 0 0 5.8-5.8l-2.6 2.6-2.1-2.1z" />
+  </Icon>
+);
+
 export const TrashIcon = (p: IconProps) => (
   <Icon {...p}>
     <path d="M4 7h16M10 11v6M14 11v6M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M9 7V4h6v3" />

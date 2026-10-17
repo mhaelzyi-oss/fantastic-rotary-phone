@@ -60,7 +60,7 @@ test("blips keep their positions across rescans", async ({ page }) => {
   expect([...after].sort()).toEqual([...before].sort());
 });
 
-test("follows the vidow look: Instrument Sans, blue accent, 16px glass cards", async ({ page }) => {
+test("follows the KUI look: Instrument Sans, gold accent, 16px glass cards", async ({ page }) => {
   await load(page);
   expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily)).toContain("Instrument Sans");
   expect(

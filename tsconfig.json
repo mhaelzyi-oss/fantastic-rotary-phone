@@ -9,9 +9,10 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
+    "allowJs": true,
     "jsx": "react-jsx",
     "types": ["chrome", "vite/client"]
   },
-  "include": ["src", "harness" , "vite.config.ts", "vite.demo.config.ts"],
+  "include": ["src", "harness", "vite.config.ts", "vite.demo.config.ts", "scripts/web-tools-pack.d.ts", "site/lib/web-tools.d.ts"],
   "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx", "site"]
 }

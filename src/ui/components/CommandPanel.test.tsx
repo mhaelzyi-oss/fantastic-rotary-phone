@@ -123,6 +123,15 @@ describe("CommandPanel", () => {
     expect(screen.getByTestId("command-output")).toHaveTextContent("master.m3u8");
   });
 
+  it("offers audio-only extract for ffmpeg and yt-dlp, never for DRM", async () => {
+    const user = userEvent.setup();
+    render(<CommandPanel index={0} />);
+    await user.click(within(screen.getByRole("tablist", { name: "Tool" })).getByRole("tab", { name: "ffmpeg" }));
+    await user.click(screen.getByLabelText("Audio only"));
+    expect(screen.getByTestId("command-output")).toHaveTextContent("-vn");
+    expect(screen.getByTestId("command-output")).toHaveTextContent(".m4a");
+  });
+
   it("keeps refusing encrypted streams in yt-dlp page mode", () => {
     load([mp4, hls, drm], { cliYtdlpPage: true });
     render(<CommandPanel index={2} />);

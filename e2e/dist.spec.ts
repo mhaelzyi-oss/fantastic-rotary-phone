@@ -140,6 +140,19 @@ test("built side panel and options pages load cleanly", async ({ page }) => {
   expect(seen.outside).toEqual([]);
 });
 
+test("built extension ships the seven local-file tool pages", async ({ page }) => {
+  const slugs = ["convert", "compress", "trim", "merge", "gif", "audio", "add-audio"];
+  for (const slug of slugs) {
+    expect(existsSync(join(DIST, "tools", slug, "index.html")), slug).toBe(true);
+    expect(existsSync(join(DIST, "tools", slug, "app.js")), slug).toBe(true);
+  }
+  const seen = await open(page, "tools/convert/index.html");
+  await expect(page.getByRole("heading", { name: "Video Converter" })).toBeVisible();
+  await expect(page.getByText("KUI Video Extractor").first()).toBeVisible();
+  expect(seen.outside).toEqual([]);
+  expect(seen.problems).toEqual([]);
+});
+
 test("every file the manifest points at exists in dist", async () => {
   const manifest = JSON.parse(readFileSync(join(DIST, "manifest.json"), "utf8")) as Record<string, any>;
   const refs = [

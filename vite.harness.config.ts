@@ -1,8 +1,10 @@
 import { readFileSync } from "node:fs";
 import type { IncomingMessage, ServerResponse } from "node:http";
-import { resolve } from "node:path";
+import { extname, normalize, resolve } from "node:path";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
+import { collectWebToolFiles } from "./scripts/web-tools-pack.mjs";
+import { webTools } from "./site/lib/web-tools.mjs";
 
 const MPEGURL = "application/vnd.apple.mpegurl";
 const SEGMENTS = 3;
@@ -55,11 +57,34 @@ function mediaApi(): Plugin {
   };
 }
 
+function webToolsPages(): Plugin {
+  const types: Record<string, string> = {
+    ".html": "text/html",
+    ".js": "text/javascript",
+    ".css": "text/css",
+  };
+  return {
+    name: "harness-web-tools",
+    configureServer(server) {
+      server.middlewares.use((req: IncomingMessage, res: ServerResponse, next) => {
+        const path = normalize((req.url ?? "").split("?")[0] ?? "").replace(/^[/\\]+/, "").replaceAll("\\", "/");
+        const match = /^tools\/([a-z0-9-]+)\/(.*)$/.exec(path);
+        if (!match || !webTools.some((t) => t.slug === match[1])) return next();
+        const files = collectWebToolFiles(match[1]!);
+        const rel = match[2] === "" || match[2] === "/" ? "index.html" : match[2]!;
+        const bytes = files[rel];
+        if (!bytes) return next();
+        res.writeHead(200, { "content-type": types[extname(rel)] ?? "application/octet-stream" }).end(Buffer.from(bytes));
+      });
+    },
+  };
+}
+
 /** Serves the test harness: real content script + real UI + real background modules, with the demo media as static files. */
 export default defineConfig({
   root: "harness",
   publicDir: "../demo",
-  plugins: [react(), mediaApi()],
+  plugins: [react(), mediaApi(), webToolsPages()],
   esbuild: { target: "esnext" },
   optimizeDeps: { esbuildOptions: { target: "esnext" } },
   server: { host: "127.0.0.1", port: 4178, strictPort: true },

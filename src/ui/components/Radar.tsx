@@ -7,19 +7,20 @@ type Props = {
   sources: MediaItem[];
   selectedIndex: number | null;
   onPick: (index: number) => void;
+  compact?: boolean;
 };
 
 /**
  * Download radar. The beam sweeps once every 3.2s; each detected stream sits at a fixed spot and
  * pings at the moment the beam crosses it. Higher quality sits nearer the center.
  */
-export function Radar({ sources, selectedIndex, onPick }: Props) {
+export function Radar({ sources, selectedIndex, onPick, compact = false }: Props) {
   const blips = layoutBlips(sources);
   const label = sources.length ? `${sources.length} stream${sources.length === 1 ? "" : "s"}` : "Scanning";
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.radar} role="group" aria-label={label} data-testid="radar" data-state={sources.length ? "found" : "scanning"}>
+      <div className={compact ? `${styles.radar} ${styles.compact}` : styles.radar} role="group" aria-label={label} data-testid="radar" data-state={sources.length ? "found" : "scanning"}>
         <span className={`${styles.ring} ${styles.r1}`} />
         <span className={`${styles.ring} ${styles.r2}`} />
         <span className={`${styles.ring} ${styles.r3}`} />

@@ -9,7 +9,20 @@ describe.skipIf(skip)("published site", () => {
   const html = (name: string) => readFileSync(join(dist, name), "utf8");
 
   it("ships no scripts, no inline event handlers and no third-party URLs", () => {
-    for (const name of ["index.html", "privacy.html", "security.html", "404.html"]) {
+    const pages = [
+      "index.html",
+      "privacy.html",
+      "security.html",
+      "404.html",
+      "tools/convert/index.html",
+      "tools/compress/index.html",
+      "tools/trim/index.html",
+      "tools/merge/index.html",
+      "tools/gif/index.html",
+      "tools/audio/index.html",
+      "tools/add-audio/index.html",
+    ];
+    for (const name of pages) {
       const page = html(name);
       expect(page, name).not.toMatch(/<script[\s>]/i);
       expect(page, name).not.toMatch(/\son[a-z]+\s*=/i);
@@ -65,6 +78,27 @@ describe.skipIf(skip)("published site", () => {
     const css = readFileSync(join(dist, "style.css"), "utf8");
     expect(css).toMatch(/#c9a227/i);
     expect(css).not.toMatch(/#2563eb/i);
+  });
+
+  it("lists Extractor plus the seven local-file tools, not Detect/Analyze/etc", () => {
+    const home = html("index.html");
+    const section = home.match(/<section[^>]*\sid="tools"[\s\S]*?<\/section>/)?.[0] ?? "";
+    expect(section).toMatch(/id="tool-extractor"/);
+    expect(section).toContain("Install extension");
+    const slugs = ["convert", "compress", "trim", "merge", "gif", "audio", "add-audio"];
+    for (const slug of slugs) {
+      expect(section.match(new RegExp(`id="tool-${slug}"`, "g"))).toHaveLength(1);
+      expect(section).toContain(`/tools/${slug}/`);
+      expect(section).toContain(`kui-tool-${slug}-`);
+      expect(section).toContain("Open page");
+      expect(section).toContain("Download zip");
+    }
+    expect(section.match(/id="tool-[a-z0-9-]+"/g)).toHaveLength(8);
+    expect(section).not.toMatch(/id="tool-(detect|analyze|quality|library|names|subs)"/);
+    expect(section).not.toMatch(/HLS player|\bCast\b/);
+    expect(section).not.toMatch(/class="steps"/);
+    expect(home).not.toMatch(/\{\{TOOLS\}\}|\{\{KICKER\}\}/);
+    expect(existsSync(join(dist, "downloads", "kui-tool-convert-1.2.0.zip"))).toBe(true);
   });
 
   it("bundles its own font and logo, so it never fetches them from elsewhere", () => {

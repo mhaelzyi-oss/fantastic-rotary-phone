@@ -5,7 +5,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { zipSync } from "fflate";
 import { collectWebToolFiles, writeWebTools } from "./web-tools-pack.mjs";
-import { toolsMarkup, webTools, zipName } from "../site/lib/web-tools.mjs";
+import { toolChrome, toolPageExtras, toolsFooter, toolsMarkup, toolsNav, webTools, zipName } from "../site/lib/web-tools.mjs";
 
 const root = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
@@ -127,6 +127,8 @@ function stamp(html) {
     .replaceAll("{{BADGES}}", badges)
     .replaceAll("{{DOWNLOADS}}", downloadCards)
     .replaceAll("{{TOOLS}}", toolsMarkup(VERSION, BASE))
+    .replaceAll("{{TOOLS_NAV}}", toolsNav(BASE))
+    .replaceAll("{{TOOLS_FOOT}}", toolsFooter(BASE))
     .replaceAll("{{STUDIO_HASH}}", STUDIO_HASH);
 }
 
@@ -162,9 +164,9 @@ for (const tool of webTools) {
     "</head>",
     `    <link rel="stylesheet" href="${BASE}/style.css" />\n    <link rel="canonical" href="${SITE_URL}/tools/${tool.slug}/" />\n  </head>`,
   );
-  const bar = `<p class="tool-chrome wrap"><a class="btn btn-ghost small" href="${BASE}/#tools">All tools</a><a class="btn btn-dark small" href="${BASE}/downloads/${zipName(tool.slug, VERSION)}" download data-kui-zip>Download zip</a></p>`;
+  const bar = toolChrome(tool, VERSION, BASE);
   html = html.replace("<body>", `<body>\n    ${header}\n    ${bar}`);
-  html = html.replace("</body>", `    ${footer}\n    <script src="${BASE}/studio/pulse.js"></script>\n  </body>`);
+  html = html.replace("</body>", `    ${toolPageExtras(tool.slug, VERSION, BASE)}\n    ${footer}\n    <script src="${BASE}/studio/pulse.js"></script>\n  </body>`);
   html = stamp(html);
   html = html.replace(
     /Content-Security-Policy" content="[^"]+"/,

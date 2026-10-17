@@ -38,7 +38,7 @@ describe("web tools catalog", () => {
   it("renders Extractor plus one card per web tool, with Open and Download zip", () => {
     const html = toolsMarkup("1.2.0");
     expect(html.match(/id="tool-extractor"/g)).toHaveLength(1);
-    expect(html).toContain("Install extension");
+    expect(html).toContain("Get extension");
     expect(html).toContain('href="#install"');
     for (const tool of webTools) {
       expect(html.match(new RegExp(`id="tool-${tool.slug}"`, "g"))).toHaveLength(1);

@@ -34,6 +34,10 @@ describe.skipIf(skip)("published site", () => {
       expect(page, slug).toMatch(/type="file"/);
       expect(page, slug).toContain("/studio/pulse.js");
       expect(page, slug).toContain("Download zip");
+      expect(page, slug).toContain("How it works");
+      expect(page, slug).toContain("More tools");
+      expect(page, slug).toContain("Get extension");
+      expect(page, slug).toContain("Start ");
       expect(page, slug).not.toMatch(/this page on kui\.video has no scripts/i);
       expect(page, slug).not.toMatch(/\{\{[A-Z_]+\}\}/);
     }
@@ -94,7 +98,10 @@ describe.skipIf(skip)("published site", () => {
     const home = html("index.html");
     const section = home.match(/<section[^>]*\sid="tools"[\s\S]*?<\/section>/)?.[0] ?? "";
     expect(section).toMatch(/id="tool-extractor"/);
-    expect(section).toContain("Install extension");
+    expect(section).toContain("Get extension");
+    expect(home).toMatch(/<summary>Tools<\/summary>/);
+    expect(home).toMatch(/Free tools/);
+    expect(home).toMatch(/How it works|Questions/);
     const slugs = ["convert", "compress", "trim", "merge", "gif", "audio", "add-audio"];
     for (const slug of slugs) {
       expect(section.match(new RegExp(`id="tool-${slug}"`, "g"))).toHaveLength(1);

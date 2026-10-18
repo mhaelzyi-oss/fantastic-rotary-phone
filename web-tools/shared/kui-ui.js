@@ -47,6 +47,13 @@
 
   KuiUi.bindDrop = function (el, onFiles) {
     var input = el.querySelector("input[type=file]");
+    function receive(files) {
+      var btn = KuiUi.qs("#run");
+      if (btn && files && files.length) btn.hidden = false;
+      var opts = KuiUi.qs(".opts");
+      if (opts && files && files.length) opts.hidden = false;
+      onFiles(files);
+    }
     el.addEventListener("click", function (e) {
       if (!input) return;
       if (e.target === input) return;
@@ -61,7 +68,7 @@
     });
     if (input) {
       input.addEventListener("change", function () {
-        onFiles(Array.prototype.slice.call(input.files || []));
+        receive(Array.prototype.slice.call(input.files || []));
       });
     }
     el.addEventListener("dragover", function (e) {
@@ -74,7 +81,7 @@
     el.addEventListener("drop", function (e) {
       e.preventDefault();
       el.classList.remove("on");
-      onFiles(filesFrom(e.dataTransfer));
+      receive(filesFrom(e.dataTransfer));
     });
   };
 

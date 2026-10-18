@@ -19,13 +19,13 @@
         <p class="kicker">Free tool</p>
         <h1>Video Trimmer</h1>
         <p class="muted">Keep a time range from a local MP4. Cuts on the nearest previous keyframe.</p>
-        <div class="drop" id="drop" role="button" tabindex="0">Drop a local video here, or click to choose<input id="file" type="file" accept="video/*,audio/*,.mp4,.m4v,.m4a,.mov" /></div>
+        <div class="drop" id="drop" role="button" tabindex="0"><b>Drop your video here</b><small>or click to browse</small><input id="file" type="file" accept="video/*,audio/*,.mp4,.m4v,.m4a,.mov" /></div>
         <p class="files" id="files"></p>
-        <div class="pair">
+        <div class="pair opts" hidden>
           <label>Start (s)<input id="start" type="number" min="0" step="0.1" value="0" /></label>
           <label>End (s)<input id="end" type="number" min="0" step="0.1" value="5" /></label>
         </div>
-        <button class="btn" id="run" type="button">Trim</button>
+        <button class="btn" id="run" type="button" hidden>Trim</button>
         <p class="status" id="status" role="status"></p>
         <p class="fine">This page only reads the file you pick.</p>
       </section>

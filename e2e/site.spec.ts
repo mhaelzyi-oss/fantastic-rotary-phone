@@ -56,8 +56,10 @@ test("the home page has no cookies, no third-party requests, and only first-part
 test("the converter on the site asks for a local file instead of hanging", async ({ page }) => {
   await page.goto(origin + "/tools/convert/index.html");
   await expect(page.getByRole("heading", { name: "Video Converter" })).toBeVisible();
-  await page.getByRole("button", { name: "Convert" }).click();
-  await expect(page.getByRole("status")).toContainText(/Choose a local file/);
+  await expect(page.getByRole("button", { name: "Convert" })).toBeHidden();
+  await expect(page.getByRole("button", { name: /Drop your video/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Start converting" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Get extension" }).first()).toBeVisible();
 });
 
 test("privacy, security and 404 pages load, and the checksums file is there", async ({ page }) => {

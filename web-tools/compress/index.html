@@ -19,13 +19,13 @@
         <p class="kicker">Free tool</p>
         <h1>Video Compressor</h1>
         <p class="muted">Re-encode a local video in this browser. Saves MP4 when H.264 encoding is available, otherwise WebM.</p>
-        <div class="drop" id="drop" role="button" tabindex="0">Drop a local video here, or click to choose<input id="file" type="file" accept="video/*" /></div>
+        <div class="drop" id="drop" role="button" tabindex="0"><b>Drop your video here</b><small>or click to browse</small><input id="file" type="file" accept="video/*" /></div>
         <p class="files" id="files"></p>
-        <div class="pair">
+        <div class="pair opts" hidden>
           <label>Scale <span id="scale-label">70%</span><input id="scale" type="range" min="40" max="100" value="70" /></label>
           <label>Quality <span id="quality-label">60%</span><input id="quality" type="range" min="20" max="100" value="60" /></label>
         </div>
-        <button class="btn" id="run" type="button">Compress</button>
+        <button class="btn" id="run" type="button" hidden>Compress</button>
         <p class="status" id="status" role="status"></p>
         <p class="fine">This page only reads the file you pick.</p>
       </section>

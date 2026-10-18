@@ -165,7 +165,7 @@ for (const tool of webTools) {
     `    <link rel="stylesheet" href="${BASE}/style.css" />\n    <link rel="canonical" href="${SITE_URL}/tools/${tool.slug}/" />\n  </head>`,
   );
   const bar = toolChrome(tool, VERSION, BASE);
-  html = html.replace("<body>", `<body>\n    ${header}\n    ${bar}`);
+  html = html.replace("<body>", `<body class="on-site">\n    ${header}\n    ${bar}`);
   html = html.replace("</body>", `    ${toolPageExtras(tool.slug, VERSION, BASE)}\n    ${footer}\n    <script src="${BASE}/studio/pulse.js"></script>\n  </body>`);
   html = stamp(html);
   html = html.replace(

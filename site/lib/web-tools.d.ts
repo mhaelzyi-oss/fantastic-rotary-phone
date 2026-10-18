@@ -14,7 +14,7 @@ export function toolsNav(base?: string): string;
 export function toolsFooter(base?: string): string;
 export function toolPageExtras(slug: string, version: string, base?: string): string;
 export function toolChrome(
-  tool: { slug: string; start: string },
+  tool: { slug: string; name: string; kicker: string; start: string; summary: string },
   version: string,
   base?: string,
 ): string;

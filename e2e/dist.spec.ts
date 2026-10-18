@@ -149,8 +149,8 @@ test("built extension ships the seven local-file tool pages", async ({ page }) =
   const seen = await open(page, "tools/convert/index.html");
   await expect(page.getByRole("heading", { name: "Video Converter" })).toBeVisible();
   await expect(page.getByText("KUI Video Extractor").first()).toBeVisible();
-  await page.getByRole("button", { name: "Convert" }).click();
-  await expect(page.getByRole("status")).toContainText(/Choose a local file/);
+  await expect(page.getByRole("button", { name: "Convert" })).toBeHidden();
+  await expect(page.getByRole("button", { name: /Drop your video/ })).toBeVisible();
   expect(seen.outside).toEqual([]);
   expect(seen.problems).toEqual([]);
 });

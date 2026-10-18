@@ -20,11 +20,11 @@
         <h1>Add Music</h1>
         <p class="muted">Mux a local audio file onto a local video. The original soundtrack is replaced.</p>
         <div class="pair" id="drop">
-          <div class="drop" id="drop-video" role="button" tabindex="0">Video<input id="file-video" type="file" accept="video/*,.mp4,.m4v,.mov" /></div>
-          <div class="drop" id="drop-audio" role="button" tabindex="0">Audio<input id="file-audio" type="file" accept="audio/*,.m4a,.mp4,.mov" /></div>
+          <div class="drop" id="drop-video" role="button" tabindex="0"><b>Video</b><small>drop or browse</small><input id="file-video" type="file" accept="video/*,.mp4,.m4v,.mov" /></div>
+          <div class="drop" id="drop-audio" role="button" tabindex="0"><b>Audio</b><small>drop or browse</small><input id="file-audio" type="file" accept="audio/*,.m4a,.mp4,.mov" /></div>
         </div>
         <p class="files" id="files"></p>
-        <button class="btn" id="run" type="button">Mux</button>
+        <button class="btn" id="run" type="button" hidden>Mux</button>
         <p class="status" id="status" role="status"></p>
         <p class="fine">This page only reads the files you pick.</p>
       </section>

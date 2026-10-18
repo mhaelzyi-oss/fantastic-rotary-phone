@@ -61,6 +61,17 @@ p { margin: 0 0 12px; }
 .glass { background: var(--glass); backdrop-filter: blur(22px) saturate(1.6); -webkit-backdrop-filter: blur(22px) saturate(1.6); border: 1px solid var(--glass-edge); box-shadow: var(--shine), var(--shadow); }
 .card { padding: 28px; border-radius: 20px; }
 .drop { margin: 22px 0; padding: 72px 24px; min-height: 220px; display: grid; place-items: center; border-radius: 20px; border: 1.5px dashed var(--row-border); background: var(--row); text-align: center; cursor: pointer; font-weight: 600; }
+.drop::before {
+  content: "";
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  margin-bottom: 10px;
+  background: var(--glass-strong) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c9a227' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4v10m0-10 4 4M12 4 8 8'/%3E%3Cpath d='M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2'/%3E%3C/svg%3E") center/22px no-repeat;
+  border: 1px solid var(--row-border);
+}
+.drop b { display: block; font-size: 1.05rem; }
+.drop small { display: block; margin-top: 4px; font-weight: 500; color: var(--muted-fg); }
 .drop.on { border-color: var(--blue-600); background: var(--blue-50); }
 .drop input { display: none; }
 .row { display: grid; gap: 12px; margin: 16px 0; }
@@ -68,6 +79,7 @@ p { margin: 0 0 12px; }
 label { display: grid; gap: 6px; font-weight: 600; font-size: 0.92rem; }
 input[type="number"], input[type="range"], select { font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--row-border); background: var(--glass-strong); color: var(--fg); }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 20px; border-radius: 999px; font-weight: 600; border: 0; font: inherit; cursor: pointer; background: var(--blue-600); color: #1c1404; }
+.btn[hidden], [hidden] { display: none !important; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .status { min-height: 1.4em; margin: 12px 0 0; color: var(--muted-fg); }
 .status.err { color: #b45309; }

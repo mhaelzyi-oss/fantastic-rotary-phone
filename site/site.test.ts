@@ -33,11 +33,13 @@ describe.skipIf(skip)("published site", () => {
       expect(page, slug).toMatch(/id="run"/);
       expect(page, slug).toMatch(/type="file"/);
       expect(page, slug).toContain("/studio/pulse.js");
-      expect(page, slug).toContain("Download zip");
       expect(page, slug).toContain("How it works");
       expect(page, slug).toContain("More tools");
       expect(page, slug).toContain("Get extension");
       expect(page, slug).toContain("Start ");
+      expect(page, slug).toContain('class="on-site"');
+      expect(page, slug).toContain('class="tool-hero wrap"');
+      expect(page, slug).not.toContain("Download zip");
       expect(page, slug).not.toMatch(/this page on kui\.video has no scripts/i);
       expect(page, slug).not.toMatch(/\{\{[A-Z_]+\}\}/);
     }
@@ -94,23 +96,23 @@ describe.skipIf(skip)("published site", () => {
     expect(css).not.toMatch(/#2563eb/i);
   });
 
-  it("lists Extractor plus the seven local-file tools, not Detect/Analyze/etc", () => {
+  it("lists the seven local-file tools in Video and Audio groups, not Detect/Analyze/etc", () => {
     const home = html("index.html");
     const section = home.match(/<section[^>]*\sid="tools"[\s\S]*?<\/section>/)?.[0] ?? "";
-    expect(section).toMatch(/id="tool-extractor"/);
-    expect(section).toContain("Get extension");
+    expect(section).not.toMatch(/id="tool-extractor"/);
+    expect(section).toContain(">Open<");
     expect(home).toMatch(/<summary>Tools<\/summary>/);
-    expect(home).toMatch(/Free tools/);
+    expect(home).toMatch(/>Tools</);
     expect(home).toMatch(/How it works|Questions/);
+    expect(home).toMatch(/aria-label="Company"/);
     const slugs = ["convert", "compress", "trim", "merge", "gif", "audio", "add-audio"];
     for (const slug of slugs) {
       expect(section.match(new RegExp(`id="tool-${slug}"`, "g"))).toHaveLength(1);
       expect(section).toContain(`/tools/${slug}/`);
-      expect(section).toContain(`kui-tool-${slug}-`);
       expect(section).toContain(">Open<");
-      expect(section).toContain("Download zip");
+      expect(section).not.toContain(`kui-tool-${slug}-`);
     }
-    expect(section.match(/id="tool-[a-z0-9-]+"/g)).toHaveLength(8);
+    expect(section.match(/id="tool-[a-z0-9-]+"/g)).toHaveLength(7);
     expect(section).not.toMatch(/id="tool-(detect|analyze|quality|library|names|subs)"/);
     expect(section).not.toMatch(/HLS player|\bCast\b/);
     expect(section).not.toMatch(/class="steps"/);

@@ -81,8 +81,8 @@ function esc(s) {
     .replaceAll('"', "&quot;");
 }
 
-function icon(kind) {
-  const common = 'viewBox="0 0 48 48" width="40" height="40" aria-hidden="true"';
+function icon(kind, size = 40) {
+  const common = `viewBox="0 0 48 48" width="${size}" height="${size}" aria-hidden="true"`;
   if (kind === "extractor") {
     return `<svg ${common} fill="none" stroke="#c9a227" stroke-width="2.2" stroke-linejoin="round"><path d="M24 6 40 16v16L24 42 8 32V16z"/><path d="M18 16v16m0-8 12-8M18 24l13 8"/></svg>`;
   }
@@ -98,57 +98,59 @@ function icon(kind) {
   return `<svg ${common} fill="none" stroke="#c9a227" stroke-width="2.2" stroke-linejoin="round">${marks[kind] || ""}</svg>`;
 }
 
-function extractorCard() {
-  return `<article class="tool glass featured" id="tool-${extractor.slug}">
-            <p class="tool-icon">${icon("extractor")}</p>
-            <p class="tool-kicker">${esc(extractor.kicker)}</p>
-            <h3>${esc(extractor.name)}</h3>
-            <p class="muted">${esc(extractor.summary)}</p>
-            <p class="tool-actions"><a class="btn btn-blue small" href="#install">Get extension</a></p>
-          </article>`;
-}
+const videoTools = webTools.filter((t) => t.slug !== "audio" && t.slug !== "add-audio");
+const audioTools = webTools.filter((t) => t.slug === "audio" || t.slug === "add-audio");
 
-function webToolCard(tool, version, base = "") {
-  const zip = zipName(tool.slug, version);
-  return `<article class="tool glass" id="tool-${tool.slug}">
+function webToolCard(tool, _version, base = "") {
+  return `<a class="tool glass tool-link" id="tool-${tool.slug}" href="${base}/tools/${tool.slug}/">
             <p class="tool-icon">${icon(tool.slug)}</p>
             <p class="tool-kicker">${esc(tool.kicker)}</p>
             <h3>${esc(tool.name)}</h3>
             <p class="muted">${esc(tool.summary)}</p>
-            <p class="tool-actions">
-              <a class="btn btn-blue small" href="${base}/tools/${tool.slug}/">Open</a>
-              <a class="btn btn-ghost small" href="${base}/downloads/${zip}" download data-kui-zip>Download zip</a>
-            </p>
-          </article>`;
+            <span class="tool-cta">Open</span>
+          </a>`;
+}
+
+function relatedTools(slug) {
+  const i = webTools.findIndex((t) => t.slug === slug);
+  return [1, 2, 3].map((n) => webTools[(i + n) % webTools.length]);
 }
 
 export function toolsMarkup(version, base = "") {
   if (!version) throw new Error("toolsMarkup needs the package version");
-  return `<div class="tools-feature">${extractorCard()}</div>
-          <div class="tools-grid">${webTools.map((t) => webToolCard(t, version, base)).join("")}</div>`;
+  return `<div class="tools-grid">${webTools.map((t) => webToolCard(t, version, base)).join("")}</div>`;
 }
 
 export function toolsNav(base = "") {
-  const items = [
-    `<a href="${base}/#install">Extractor</a>`,
-    ...webTools.map((t) => `<a href="${base}/tools/${t.slug}/">${esc(t.name)}</a>`),
-  ];
+  const items = webTools.map(
+    (t) => `<a class="nav-row" href="${base}/tools/${t.slug}/">
+      <span class="nav-ico">${icon(t.slug, 22)}</span>
+      <span><b>${esc(t.name)}</b><small>${esc(t.summary)}</small></span>
+    </a>`,
+  );
   return `<details class="nav-menu">
     <summary>Tools</summary>
     <div class="nav-panel glass">${items.join("")}</div>
   </details>`;
 }
 
+function footerCol(title, tools, base) {
+  return `<nav aria-label="${esc(title)}">
+    <h3>${esc(title)}</h3>
+    ${tools.map((t) => `<a href="${base}/tools/${t.slug}/">${esc(t.name)}</a>`).join("")}
+  </nav>`;
+}
+
 export function toolsFooter(base = "") {
-  return webTools.map((t) => `<a href="${base}/tools/${t.slug}/">${esc(t.short)}</a>`).join("");
+  return `${footerCol("Video tools", videoTools, base)}${footerCol("Audio", audioTools, base)}`;
 }
 
 export function toolPageExtras(slug, version, base = "") {
   const tool = webTools.find((t) => t.slug === slug);
   if (!tool) throw new Error(`unknown tool ${slug}`);
-  const others = webTools.filter((t) => t.slug !== slug);
+  const others = relatedTools(slug);
   return `<section class="block wrap tool-guide">
-            <h2>How it works</h2>
+            <h2 class="tools-title">How it works</h2>
             <div class="steps">
               <div class="step glass"><h3>Choose a file</h3><p class="muted">Drop it on this page. It never leaves this browser.</p></div>
               <div class="step glass"><h3>Run</h3><p class="muted">${esc(tool.summary)}</p></div>
@@ -156,15 +158,17 @@ export function toolPageExtras(slug, version, base = "") {
             </div>
           </section>
           <section class="block wrap">
-            <h2>Why it runs here</h2>
-            <div class="grid3">
+            <h2 class="tools-title">Why it runs here</h2>
+            <p class="lead tools-lead">No servers, no uploads, no waiting.</p>
+            <div class="grid3 why-grid">
               <div class="card glass"><h3>No upload</h3><p class="muted">The file stays on this device.</p></div>
               <div class="card glass"><h3>No account</h3><p class="muted">Nothing is sent to us.</p></div>
               <div class="card glass"><h3>Private</h3><p class="muted">Only this browser reads the file you pick.</p></div>
+              <div class="card glass"><h3>Works offline</h3><p class="muted">Once loaded, this page does not need the network.</p></div>
             </div>
           </section>
           <section class="block wrap" id="more-tools">
-            <h2>More tools</h2>
+            <h2 class="tools-title">More tools</h2>
             <div class="tools-grid">${others.map((t) => webToolCard(t, version, base)).join("")}</div>
           </section>
           <section class="block wrap">
@@ -176,11 +180,14 @@ export function toolPageExtras(slug, version, base = "") {
           </section>`;
 }
 
-export function toolChrome(tool, version, base = "") {
-  return `<p class="tool-chrome wrap">
-    <a class="btn btn-blue small" href="#drop">${esc(tool.start)}</a>
-    <a class="btn btn-dark small" href="${base}/#install">Get extension</a>
-    <a class="btn btn-ghost small" href="${base}/#tools">All tools</a>
-    <a class="btn btn-ghost small" href="${base}/downloads/${zipName(tool.slug, version)}" download data-kui-zip>Download zip</a>
-  </p>`;
+export function toolChrome(tool, _version, base = "") {
+  return `<section class="tool-hero wrap">
+    <p class="pill">${esc(tool.kicker)}</p>
+    <h1>${esc(tool.name)}</h1>
+    <p class="lead">${esc(tool.summary)}</p>
+    <p class="cta">
+      <a class="btn btn-blue" href="#drop">${esc(tool.start)}</a>
+      <a class="btn btn-ghost" href="${base}/#install">Get extension</a>
+    </p>
+  </section>`;
 }

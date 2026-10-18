@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { webTools as extTools } from "../../src/shared/webTools";
-import { extractor, FORBIDDEN_PRODUCT_NAMES, toolsMarkup, webTools, zipName } from "./web-tools.mjs";
+import { extractor, FORBIDDEN_PRODUCT_NAMES, toolChrome, toolsFooter, toolsMarkup, toolsNav, webTools, zipName } from "./web-tools.mjs";
 
 describe("web tools catalog", () => {
   it("ships Extractor plus exactly seven local-file tools", () => {
@@ -35,24 +35,39 @@ describe("web tools catalog", () => {
     expect(blob.toLowerCase()).not.toMatch(/\bhls player\b|\bcast\b/);
   });
 
-  it("renders Extractor plus one card per web tool, with Open and Download zip", () => {
+  it("renders one Open card per web tool, with no zip and no extractor card", () => {
     const html = toolsMarkup("1.2.0");
-    expect(html.match(/id="tool-extractor"/g)).toHaveLength(1);
-    expect(html).toContain("Get extension");
-    expect(html).toContain('href="#install"');
+    expect(html).not.toContain("Download zip");
+    expect(html).not.toMatch(/id="tool-extractor"/);
     for (const tool of webTools) {
       expect(html.match(new RegExp(`id="tool-${tool.slug}"`, "g"))).toHaveLength(1);
       expect(html).toContain(`>${tool.name}<`);
       expect(html).toContain(`/tools/${tool.slug}/`);
-      expect(html).toContain(`/downloads/${zipName(tool.slug, "1.2.0")}`);
       expect(html).toContain(">Open<");
-      expect(html).toContain("Download zip");
     }
-    expect(html.match(/id="tool-[a-z0-9-]+"/g)).toHaveLength(8);
+    expect(html.match(/id="tool-[a-z0-9-]+"/g)).toHaveLength(7);
     expect(html).not.toMatch(/type="module"|<script/i);
     const nested = toolsMarkup("1.2.0", "/fantastic-rotary-phone");
     expect(nested).toContain("/fantastic-rotary-phone/tools/convert/");
-    expect(nested).toContain("/fantastic-rotary-phone/downloads/kui-tool-convert-1.2.0.zip");
+    expect(zipName("convert", "1.2.0")).toBe("kui-tool-convert-1.2.0.zip");
+  });
+
+  it("puts the seven tools in the Tools menu and footer groups, and a Start plus Get extension chrome on a tool page", () => {
+    const nav = toolsNav("/app");
+    const foot = toolsFooter("/app");
+    const chrome = toolChrome(webTools[0], "1.2.0", "/app");
+    expect(nav).toContain("<summary>Tools</summary>");
+    expect(foot).toContain("Video tools");
+    expect(foot).toContain("Audio");
+    expect(chrome).toContain("Start converting");
+    expect(chrome).toContain("Get extension");
+    expect(chrome).not.toContain("Download zip");
+    expect(chrome).not.toContain("All tools");
+    for (const tool of webTools) {
+      expect(nav).toContain(`/app/tools/${tool.slug}/`);
+      expect(nav).toContain(tool.summary);
+      expect(foot).toContain(`/app/tools/${tool.slug}/`);
+    }
   });
 
   it("names zips kui-tool-<slug>-VERSION.zip", () => {
